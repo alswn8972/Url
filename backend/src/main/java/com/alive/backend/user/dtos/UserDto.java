@@ -1,4 +1,4 @@
-package com.alive.backend.user;
+package com.alive.backend.user.dtos;
 
 import lombok.Builder;
 import lombok.Data;
