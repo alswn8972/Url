@@ -6,12 +6,11 @@ import lombok.Data;
 @Data
 public class UserDto {
     private String userId;
-    private String email;
+    private String userEmail;
 
     @Builder
-    public UserDto(String userId, String email) {
+    public UserDto(String userId, String userEmail) {
         this.userId = userId;
-        this.email = email;
+        this.userEmail = userEmail;
     }
-
 }

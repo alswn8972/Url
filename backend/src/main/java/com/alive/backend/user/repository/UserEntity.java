@@ -6,19 +6,15 @@ import javax.persistence.Id;
 
 import com.alive.backend.common.utils.BaseEntity;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 public class UserEntity extends BaseEntity {
     private String userId;
-    private String email;
-    private String password;
-
-    public UserEntity(String userId, String email, String password) {
-        this.userId = userId;
-        this.email = email;
-        this.password = password;
-    }
+    private String userEmail;
+    private String userPw;
 }
