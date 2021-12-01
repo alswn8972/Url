@@ -1,22 +1,80 @@
 <template>
-<v-row justify="center">
-            <v-dialog v-model="dialog" persistent="persistent" max-width="290">
-                <v-card>
-                    <v-card-title class="text-h5">
-                        Use Google's location service?
-                    </v-card-title>
-                    <v-card-text>Let Google help apps determine location. This means sending
-                        anonymous location data to Google, even when no apps are running.</v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" text="text" @click="dialog = false">
-                            Disagree
-                        </v-btn>
-                        <v-btn color="green darken-1" text="text" @click="dialog = false">
-                            Agree
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-        </v-row>
+  <v-card>
+    <v-card-title>
+        {{ headerTitle }}
+    </v-card-title>
+    <v-card-text>
+          <v-container>
+            <v-row>
+              <!-- <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+               
+              </v-col> -->
+              <v-col cols="12">
+                <v-text-field
+                  label="Email*"
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  label="Password*"
+                  type="password"
+                  required
+                ></v-text-field>
+              </v-col>
+              
+            </v-row>
+          </v-container>
+          <small>*indicates required field</small>
+        </v-card-text>
+    <v-card-actions class="justify-end mr-2 pb-4">
+        <v-btn
+            color="red"
+            dark
+            rounded
+            small
+            @click="$emit('hide')"
+        >
+            {{ footerHideTitle }}
+        </v-btn>
+        <template v-if="footerSubmit">
+            <v-btn
+                color="success"
+                rounded
+                small
+                @click="$emit('submit')"
+            >
+                {{ footerSubmitTitle }}
+            </v-btn>
+        </template>
+    </v-card-actions>
+  </v-card>
 </template>
+
+<script>
+  export default {
+    name: 'Login',
+    props: {
+      footerSubmit: {
+        type: Boolean,
+        default: true,
+      },
+      headerTitle: {
+        type: String,
+        default: '제목',
+      },
+      footerSubmitTitle: {
+        type: String,
+        default: '저장',
+      },
+    },
+    data: () => ({
+        footerHideTitle: '닫기',
+        defaultBodyContent: 'body slot 영역을 작성해주세요.',
+    }),
+  }
+</script>
