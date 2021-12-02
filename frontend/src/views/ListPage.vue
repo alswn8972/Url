@@ -1,14 +1,14 @@
 <template>
     <div>
-        <HelloWorld />
+        <list />
     </div>
 </template>
 <script>
-import HelloWorld from "../components/HelloWorld";
+import list from "../components/list";
 
 export default {
   components: {
-    HelloWorld,
+    list
   },
 };
 </script>

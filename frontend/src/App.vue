@@ -7,7 +7,7 @@
 
 
 <script>
-import Nav from "./components/Nav";
+import Nav from "./components/common/nav";
 export default {
   name: 'App',
   components: {
