@@ -2,8 +2,6 @@
     <div class="Nav">
         <v-card>
             <v-toolbar flat="flat">
-                <!-- <font-awesome-icon icon="align-justify" class="mr-3" @click.stop="drawer =
-                !drawer"/> <menu class="mt-5" v-if="drawer"/> -->
                 <menu/>
                 <router-link class="a" to="/">
                     <v-toolbar-title style="color:black;">SITE Monitor</v-toolbar-title>
@@ -22,14 +20,17 @@
 
                 <template v-slot:extension>
                     <v-tabs fixed-tabs color="black">
-                        <router-link class="a" to="/">
+                        
                             <v-tab>
+                                <router-link class="a" to="/">
                                     Checking
+                                </router-link>
                             </v-tab>
-                        </router-link>
                         <v-tab>
-                            My SITE
-                        </v-tab>
+                                <router-link class="a" to="/list">
+                                    My Site
+                                </router-link>
+                            </v-tab>
                         <v-tab>
                             Another Selection
                         </v-tab>

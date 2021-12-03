@@ -1,6 +1,6 @@
 import jwt_decode from 'jwt-decode';
-import http from '@/util/http-common';
-import router from "@/router/router";
+import http from '@/utils/http';
+import router from "@/routers/router";
 import VueSimpleAlert from "vue-simple-alert";
 import axios from 'axios';
 export default {
@@ -66,33 +66,10 @@ export default {
     }
   },
   actions: {
-    requsetFavoriteList({ commit }) {
-      const CSRF_TOKEN = localStorage.getItem("accessToken");
-      if (CSRF_TOKEN != null) {
-        http.get('/api/v1/favorites', {
-          headers: { "Authorization": 'Bearer ' + CSRF_TOKEN }
-        }).then((res) => {
-
-          commit("FAVORITELIST", res.data.userFavoriteList);
-       
-        })
-      }
-    },
-    requestResiSaled(context, payload) {
-     
-      http
-        .delete("/api/v1/residences?residenceId=" + payload)
-        .then(({ data }) => {
-        
-        })
-        .catch((err) => {
-         
-        });
-    },
     requestRegister(context, payload) {
       let body = payload
 
-      http.post('/api/v1/users', body).then(() => {
+      http.post('/api/join', body).then(() => {
         VueSimpleAlert.fire({
           title: "SUCCESS",
           text: "회원가입이 완료 되었습니다.👋",
