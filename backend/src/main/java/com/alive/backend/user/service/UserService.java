@@ -1,5 +1,6 @@
 package com.alive.backend.user.service;
 
+import com.alive.backend.user.dtos.UserLoginRequest;
 import com.alive.backend.user.dtos.UserRegisterRequest;
 import com.alive.backend.user.repository.UserEntity;
 import com.alive.backend.user.repository.UserRepository;
@@ -24,5 +25,10 @@ public class UserService {
         return userRepository.findByUserIdLike(userId);
     }
 
-    //
+    //로그인
+    public UserEntity loginUser(UserLoginRequest userLoginRequest){
+        String userId = userLoginRequest.getUserId();
+        String userPw = userLoginRequest.getUserPw();
+        return userRepository.findByUserIdLikeAndUserPwLike(userId, userPw);
+    }
 }

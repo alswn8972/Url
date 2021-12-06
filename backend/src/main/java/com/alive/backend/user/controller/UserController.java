@@ -12,7 +12,7 @@ import com.alive.backend.user.dtos.UserRegisterRequest;
 
 import java.util.NoSuchElementException;
 
-
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -35,9 +35,13 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<? extends Serializers.Base> login(@RequestBody UserLoginRequest userLoginRequest){
-		//userService.loginUser(userLoginRequest);
-		return null;
+	public ResponseEntity<? extends BaseResponseBody> login(@RequestBody UserLoginRequest userLoginRequest){
+		userService.loginUser(userLoginRequest);
+		if(userService.loginUser(userLoginRequest) == null) {
+			return ResponseEntity.status(409).body(BaseResponseBody.of(409, "일치하는 정보가 없습니다."));
+		}else {
+			return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
+		}
 	}
 
 }
