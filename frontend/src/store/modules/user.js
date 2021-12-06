@@ -9,17 +9,11 @@ export default {
     userInfo: null,
     accessToken: "",
     accessEstate: null,
-    estateInfo: null,
-    myfavoriteList: null,
-    residenceInfo: null,
-    totalPage: 0,
+    
   },
   getters: {
     getAccessToken(state) {
       return state.accessToken;
-    },
-    getAccessInfo(state) {
-      return state.accessEstate;
     },
     getLoginStatus(state) {
       return state.loginStatus;
@@ -27,28 +21,10 @@ export default {
     getUserInfo(state) {
       return state.userInfo;
     },
-    getEstateInfo(state) {
-      return state.estateInfo;
-    },
-    getMyfavoriteList(state) {
-      return state.myfavoriteList;
-    },
-    getResidenceInfo(state) {
-    
-      return state.residenceInfo;
-    },
-    getTotalPage(state) {
-      return state.totalPage;
-    }
   },
   mutations: {
     LOGIN(state, payload) {
-      const decode = jwt_decode(payload.accessToken);
-      const info = decode.userInfo;
-      state.accessEstate = info.isEstate;
-      state.accessToken = payload.accessToken;
-      localStorage.setItem("accessToken", state.accessToken);
-      localStorage.setItem("accessEstate", state.accessEstate);
+      console.log("로그인 완");
     },
     USERINFO(state, payload) {
       state.userInfo = payload;
@@ -83,26 +59,28 @@ export default {
       });
     },
     requestLogin({ commit }, user) {
+      console.log("흠?")
       http
-        .post(`/api/v1/auth/login`, user)
+        .post(`/api/login`, user)
         .then(({ data }) => {
+          
           commit("LOGIN", data);
           VueSimpleAlert.fire({
             title: "로그인 성공",
             text: "로그인이 완료 되었습니다.🙌",
             type: "success",
           })
-          router.push('/');
+          
         })
         .catch((err) => {
-
+          console.log(err);
           if (err.response.status == 401) {
             VueSimpleAlert.fire({
               title: "로그인 실패",
               text: "아이디와 패드워드를 다시 확인해주세요.😭",
               type: "error",
             })
-          } else if (err.response.status == 404) {
+          } else if (err.response.status == 409) {
             VueSimpleAlert.fire({
               title: "로그인 실패",
               text: "회원정보가 없습니다.😭",
@@ -166,32 +144,7 @@ export default {
           }
         });
     },
-    requestEstate({ commit }, estateNum) {
-     
-        http.get(`/api/v1/users/estate`, { params: { registrationNumber: estateNum } })
-        .then((res) => {
-          commit("user/ESTATEINFO", res.data.estateInfo, { root: true });
-          VueSimpleAlert.fire({
-            title: "SUCCESS",
-            text: "사업자 번호가 확인되었습니다.",
-            type: "success",
-          })
-
-
-
-            .catch((error) => {
-              if (error.response.data.statusCode == 500) {
-                commit("ESTATENUMBER", false);
-                VueSimpleAlert.fire({
-                  title: "FAIL",
-                  text: "사업자 번호가 존재하지 않습니다.",
-                  type: "error",
-                })
-              }
-            });
-
-        });
-    },
+    
     requestDuplicate({ commit }, userId) {
       http
         .get(`/api/v1/users/` + userId)
@@ -238,74 +191,7 @@ export default {
           }
         });
     },
-    requestRegistResi({ commit }, residence) {
-      var formData = new FormData();
-
-      formData.append('area', residence.area);
-      formData.append('buildingFloor', residence.buildingFloor);
-      formData.append('cost', residence.cost);
-      formData.append('deposit', residence.deposit);
-      formData.append('direction', residence.direction);
-      formData.append('dong', residence.dong);
-      formData.append('estateId', residence.estateId);
-
-      formData.append('jeonseCost', residence.jeonseCost);
-      formData.append('wolseCost', residence.wolseCost);
-      formData.append('lat', residence.lat);
-      formData.append('lon', residence.lon);
-      formData.append('manageCost', residence.manageCost);
-      formData.append('myFloor', residence.myFloor);
-      formData.append('name', residence.name);
-      formData.append('residenceCategory', residence.residenceCategory);
-      formData.append('residenceType', residence.residenceType);
-      formData.append('structure', residence.structure);
-      if (residence.feature.length > -1) {
-        for (let i = 0; i < residence.feature.length; i++) {
-          formData.append(`feature[${i}]`, residence.feature[i]);
-        }
-      }
-      if (residence.thumbnails.length > -1) {
-        for (let i = 0; i < residence.thumbnails.length; i++) {
-          const imageForm = residence.thumbnails[i]
-          formData.append(`thumbnails[${i}]`, imageForm);
-        }
-      }
-      http
-        .post(`/api/v1/residences`, formData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          })
-        .then(({ data }) => {
-          this.router.go();
-        })
-        .catch((err) => {
-       
-        });
-    },
-    requestGetResi({ commit }, data) {
-     
-      http
-        .post(`/api/v1/residences/estateIds`, data)
-        .then(({ data }) => {
-        
-          commit("user/RESIDENCEINFO", data, { root: true });
-
-        })
-        .catch((err) => {
-          
-        });
-    },
-    requestModifyResi({ commit }, data) {
-      
-      http
-        .patch("/api/v1/residences?residenceId=" + data.residenceId, data)
-        .then(({ data }) => {
-         
-        })
-        .catch((err) => {
-        
-        });
-    }
+    
   },
 
 }

@@ -31,21 +31,13 @@
                                     My Site
                                 </router-link>
                             </v-tab>
-                        <v-tab>
-                            Another Selection
-                        </v-tab>
-                        <v-tab>
-                            Items
-                        </v-tab>
-                        <v-tab>
-                            Another Screen
-                        </v-tab>
+                        
                     </v-tabs>
                 </template>
             </v-toolbar>
         </v-card>
         <v-dialog v-model="loginDialog" max-width="500">
-            <login header-title="로그인" @hide="hideDialog()" @submit="submitDialog()">
+            <login header-title="로그인" @hide="hideDialog()" @submit="submit">
                 <template v-slot:body>
                     <v-text-field placeholder="내용을 입력하세요"/>
                 </template>
@@ -58,6 +50,7 @@
 <script>
     import login from "./login"
     import menu from "./menu"
+    import {mapActions} from "vuex"
     export default {
         name: "Nav",
         components: {
@@ -71,19 +64,27 @@
                     'web', 'shopping', 'videos', 'images', 'news'
                 ],
                 loginDialog: false,
-                drawer: false
+                drawer: false,
+                user:{
+                    userId:'',
+                    userPw:'',
+                },
+                
             };
         },
         methods: {
+            ...mapActions("user", ["requestLogin"]),
             showDialog() {
-                console.log('열려라')
                 this.loginDialog = true
             },
             hideDialog() {
                 this.loginDialog = false
             },
-            submitDialog() {
+            submit(user) {
                 console.log('submit 완료!')
+                this.user.userId=user.userId
+                this.user.userPw=user.userPw
+                this.requestLogin(this.user)
                 this.hideDialog()
             },
             openMenu() {

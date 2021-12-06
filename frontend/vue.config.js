@@ -5,7 +5,14 @@ module.exports = {
     sourceMap: process.env.NODE_ENV !== 'production'
   },
   devServer:{
-    overlay:false
+    https: false,
+      port: 8080,
+      open: true,
+      proxy: {
+        '/api': {
+          target: `http://${URL}/`
+        },
+
   },
   transpileDependencies: [
     'vuetify'

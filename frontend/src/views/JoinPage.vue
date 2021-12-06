@@ -1,14 +1,14 @@
 <template>
     <div>
-        <join />
+        <Join />
     </div>
 </template>
 <script>
-import join from "../components/join";
+import Join from "../components/join";
 
 export default {
   components: {
-    join
+    Join
   },
 };
 </script>
