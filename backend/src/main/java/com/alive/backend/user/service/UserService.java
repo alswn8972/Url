@@ -1,34 +1,45 @@
 package com.alive.backend.user.service;
 
+import com.alive.backend.user.dtos.UserDto;
 import com.alive.backend.user.dtos.UserLoginRequest;
 import com.alive.backend.user.dtos.UserRegisterRequest;
 import com.alive.backend.user.repository.UserEntity;
 import com.alive.backend.user.repository.UserRepository;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    public UserService(final UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
     //회원가입
     public UserEntity createUser(UserRegisterRequest userRegisterRequest){
         UserEntity userEntity = new UserEntity();
         userEntity.setUserId(userRegisterRequest.getUserId());
         userEntity.setUserEmail(userRegisterRequest.getUserEmail());
-        userEntity.setUserPw(userRegisterRequest.getUserPw());
+        userEntity.setUserPw(passwordEncoder.encode(userRegisterRequest.getUserPw()));
         return userRepository.save(userEntity);
     }
     //아이디 중복검사
-    public UserEntity getUserId(String userId){
+    public UserDto getUserId(String userId){
+        return userRepository.findByUserIdLike(userId);
+    }
+    @Transactional(readOnly = true)
+    public UserDto selectUser(String userId) {
         return userRepository.findByUserIdLike(userId);
     }
 
     //로그인
-    public UserEntity loginUser(UserLoginRequest userLoginRequest){
+    public UserDto loginUser(UserLoginRequest userLoginRequest){
         String userId = userLoginRequest.getUserId();
-        String userPw = userLoginRequest.getUserPw();
-        return userRepository.findByUserIdLikeAndUserPwLike(userId, userPw);
+        return userRepository.findByUserIdLike(userId);
     }
 }

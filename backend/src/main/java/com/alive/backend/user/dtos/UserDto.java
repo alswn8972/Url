@@ -2,15 +2,21 @@ package com.alive.backend.user.dtos;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UserDto {
     private String userId;
+    private String userPw;
+    private String userName;
     private String userEmail;
 
     @Builder
-    public UserDto(String userId, String userEmail) {
+    public UserDto(String userId, String userName, String userPw) {
         this.userId = userId;
-        this.userEmail = userEmail;
+        this.userName = userName;
+        this.userPw = userPw;
     }
 }

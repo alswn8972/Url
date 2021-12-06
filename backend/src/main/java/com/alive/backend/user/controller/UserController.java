@@ -34,15 +34,5 @@ public class UserController {
 			return ResponseEntity.status(409).body(BaseResponseBody.of(409, "이미 존재하는 사용자 ID입니다."));
 	}
 
-	@PostMapping("/login")
-	public ResponseEntity<? extends BaseResponseBody> login(@RequestBody UserLoginRequest userLoginRequest){
-		userService.loginUser(userLoginRequest);
-		if(userService.loginUser(userLoginRequest) == null) {
-			return ResponseEntity.status(409).body(BaseResponseBody.of(409, "일치하는 정보가 없습니다."));
-		}else {
-			return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
-		}
-	}
-
 }
 
