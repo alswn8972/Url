@@ -10,7 +10,7 @@
                     type="text" 
                     label="이름" 
                     required
-                    :rules="userNameRule">
+                    :rules="userName_rule">
                 </v-text-field>
                 <v-text-field v-model="userId" type="text" label="아이디" required
                 :rules="userId_rule">
@@ -31,7 +31,7 @@
                     :rules="userEmail_rule">
                 </v-text-field>
 
-                <v-btn color="success" class="mr-4" >
+                <v-btn color="success" class="mr-4" @click="clickJoin">
                     Join with Us
                 </v-btn>
 
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+    import {mapActions} from 'vuex';
     export default {
         name: "join",
         props: {
@@ -61,20 +62,45 @@
                 userPw: null, 
                 userId: null, 
                 userEmail: null, 
-                userPwCk: null};
+                userPwCk: null,
+                userId_rule: [
+                    v => !!v || '아이디는 필수 입력사항입니다.',
+                    v => /^[a-zA-Z0-9]*$/.test(v) || '아이디는 영문+숫자만 입력 가능합니다.',
+                    v => !( v && v.length >= 15) || '아이디는 15자 이상 입력할 수 없습니다.'
+                ],
 
-                userNameRule:[
+                userName_rule: [
                     v => !!v || '이름은 필수 입력사항입니다.',
-                    v => !(v && v.length >= 30) || '이름은 30자 이상 입력할 수 없습니다.',
-                    v => !/[~!@#$%^&*()_+|<>?:{}].test(v)/ || '이름에는 특수문자를 사용할 수 없습니다.'
-                ]
+                    v => !(v && v.length >= 30) || '이름은 10자 이상 입력할 수 없습니다.',
+                    v => !/[~!@#$%^&*()_+|<>?:{}]/.test(v) || '이름에는 특수문자를 사용할 수 없습니다.'
+                ],
+
+                userPw_rule: [
+                    v => this.state === 'ins' ? !!v || '패스워드는 필수 입력사항입니다.' : true,
+                    v => !(v && v.length >= 30) || '패스워드는 30자 이상 입력할 수 없습니다.',
+                ],
+                userPwCk_rule: [
+                    v => this.state === 'ins' ? !!v || '패스워드는 필수 입력사항입니다.' : true,
+                    v => !(v && v.length >= 30) || '패스워드는 30자 이상 입력할 수 없습니다.',
+                    v => v === this.userPw || '패스워드가 일치하지 않습니다.'
+                ],    
+                user_desc_rule: [
+                    v => !(v && v.length >= 100) || '설명은 100자 이상 입력할 수 업습니다.'
+                ]    
+            };
         },
         methods: {
-            //...mapActions('user', ["requestRegister", "requestDuplicate", "requestEstate"]),
+            ...mapActions('user', ["requestRegister", "requestDuplicate"]),
             clickDuplicate(userId){
                 this.requestDuplicate(userId);
             },
-
+            clickJoin(){
+                const validate = this.$refs.form.validate();
+                if(validate){
+                    console.log(validate);
+                }
+                console.log('하이');
+            },
             validate () {
                 this.$refs.form.validate()
             },

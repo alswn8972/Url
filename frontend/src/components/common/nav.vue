@@ -81,14 +81,12 @@
                 this.loginDialog = false
             },
             submit(user) {
-                console.log('submit 완료!')
                 this.user.userId=user.userId
                 this.user.userPw=user.userPw
                 this.requestLogin(this.user)
                 this.hideDialog()
             },
             openMenu() {
-                console.log('메뉴')
                 this.openMenu = true;
             }
         }

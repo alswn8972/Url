@@ -77,7 +77,6 @@
                     userId:this.userId,
                     userPw:this.userPw
                 }
-                console.log(user.userId);
                 this.$emit('submit', user); // #하위 컴포넌트에서 상위컴포넌트로 데이터 전달
             }
         }
