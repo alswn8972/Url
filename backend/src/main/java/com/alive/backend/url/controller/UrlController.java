@@ -3,9 +3,12 @@ package com.alive.backend.url.controller;
 import com.alive.backend.common.utils.BaseResponseBody;
 import com.alive.backend.url.dtos.UrlAddRequest;
 import com.alive.backend.url.dtos.UrlDeleteRequest;
+import com.alive.backend.url.dtos.UrlGetResponse;
 import com.alive.backend.url.dtos.UrlPatchRequest;
+import com.alive.backend.url.repository.UrlEntity;
 import com.alive.backend.url.service.UrlService;
 import com.fasterxml.jackson.databind.ser.Serializers;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.cert.CertPathValidatorException;
+import java.util.List;
 
 @CrossOrigin("*")
 @RestController
@@ -46,8 +50,16 @@ public class UrlController {
         }catch (NullPointerException e){
             return ResponseEntity.status(500).body(BaseResponseBody.of(500, "다시 시도해주시길 바랍니다."));
         }
+    }
 
-
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<?> getMyUrl(@PathVariable String userId){
+        try {
+            List<UrlGetResponse> urlList =  urlService.getMyUrl(userId);
+            return ResponseEntity.ok(urlList);
+        }catch (NullPointerException e){
+            return null;
+        }
     }
 
     @GetMapping("/{address:.+}")

@@ -11,4 +11,7 @@ public class UrlAddRequest {
     private final String urlContent;
     @ApiModelProperty(name="url", example="http://bccard.com")
     private final String urlAddress;
+
+    @ApiModelProperty(name="userId", example="alswn8972")
+    private final String userId;
 }
