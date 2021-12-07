@@ -22,7 +22,7 @@ public class BcUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        UserDto user = userService.selectUser(id);
+         UserDto user = userService.selectUser(id);
         if(user != null) {
             BcUserDetails userDetail = new BcUserDetails(user);
             return userDetail;

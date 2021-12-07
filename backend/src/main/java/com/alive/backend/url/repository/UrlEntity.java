@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class UrlEntity extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
-    @JoinColumn(name="`user_id`")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="user_id")
     private UserEntity userEntity;
 
     String urlName;

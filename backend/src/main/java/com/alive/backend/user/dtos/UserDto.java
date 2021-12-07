@@ -1,22 +1,17 @@
 package com.alive.backend.user.dtos;
 
-import lombok.Builder;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class UserDto {
-    private String userId;
-    private String userPw;
-    private String userName;
-    private String userEmail;
+    @ApiModelProperty(name="Name", example="강민주")
+    private final String userName;
+    @ApiModelProperty(name="ID", example="alswn8972")
+    private final String userId;
+    @ApiModelProperty(name="Password", example="djaakwl1@")
+    private final String userPw;
+    @ApiModelProperty(name="Email", example="cherrykang97@naver.com")
+    private final String userEmail;
 
-    @Builder
-    public UserDto(String userId, String userName, String userPw) {
-        this.userId = userId;
-        this.userName = userName;
-        this.userPw = userPw;
-    }
 }

@@ -1,23 +1,56 @@
 package com.alive.backend.url.controller;
 
 import com.alive.backend.common.utils.BaseResponseBody;
+import com.alive.backend.url.dtos.UrlAddRequest;
+import com.alive.backend.url.dtos.UrlDeleteRequest;
+import com.alive.backend.url.dtos.UrlPatchRequest;
+import com.alive.backend.url.service.UrlService;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.cert.CertPathValidatorException;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/url")
 public class UrlController {
+    private final UrlService urlService;
 
-    @GetMapping("/url/{address:.+}")
+    public UrlController(UrlService urlService) {
+        this.urlService = urlService;
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<? extends BaseResponseBody> addUrl(@RequestBody UrlAddRequest urlAddRequest){
+        urlService.addUrl(urlAddRequest);
+        return ResponseEntity.status(201).body(BaseResponseBody.of(201, "저장이 완료되었습니다."));
+    }
+
+    @PatchMapping("/patch")
+    public ResponseEntity<? extends BaseResponseBody> patchUrl(@RequestBody UrlPatchRequest urlPatchRequest){
+        urlService.patchUrl(urlPatchRequest);
+        return ResponseEntity.status(201).body(BaseResponseBody.of(201, "수정이 완료되었습니다."));
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<? extends BaseResponseBody> deleteUrl(@RequestBody UrlDeleteRequest urlDeleteRequest){
+        try {
+            urlService.deleteUrl(urlDeleteRequest);
+            return ResponseEntity.status(201).body(BaseResponseBody.of(201, "삭제가 완료되었습니다."));
+        }catch (NullPointerException e){
+            return ResponseEntity.status(500).body(BaseResponseBody.of(500, "다시 시도해주시길 바랍니다."));
+        }
+
+
+    }
+
+    @GetMapping("/{address:.+}")
     public ResponseEntity<? extends BaseResponseBody> getUrlState(@PathVariable(value = "address") String address) {
         String totalUrl = "http://"+address;
         URL url = null;
@@ -75,4 +108,5 @@ public class UrlController {
         }
         return null;
     }
+
 }

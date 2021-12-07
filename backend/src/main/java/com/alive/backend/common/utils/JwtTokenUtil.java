@@ -8,7 +8,6 @@ import com.auth0.jwt.exceptions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -47,7 +46,7 @@ public class JwtTokenUtil {
 
     public static String getToken(UserDto userDto) {
         System.out.println(userDto.getUserId());
-        System.out.println(userDto.toString());
+        System.out.println(userDto.getUserName());
         Date expires = JwtTokenUtil.getTokenExpiration(expirationTime);
         Map<String, String > token = new HashMap<String, String>();
 

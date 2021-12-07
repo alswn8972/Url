@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +35,7 @@ public class AuthController {
 
         try {
             UserDto userDto = userService.getUserId(userLoginRequest.getUserId());
+            System.out.println(userDto.getUserName());
             if(passwordEncoder.matches(password, userDto.getUserPw()))
                 return ResponseEntity.ok(UserLoginResponse.of(200, "Success", JwtTokenUtil.getToken(userDto)));
             return ResponseEntity.status(401).body(UserLoginResponse.of(401, "잘못된 비밀번호입니다.", null));
