@@ -107,10 +107,8 @@
             },
             submit(user) {
                 this.user.userId = user.userId
-                this.user.userPw = user
-                    .userPw
-                    this
-                    .requestLogin(this.user)
+                this.user.userPw = user.userPw
+                this.requestLogin(this.user)
                 this.hideDialog()
             },
             openMenu() {

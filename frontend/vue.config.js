@@ -1,16 +1,14 @@
-const URL = "localhost:8080";
 module.exports = {
-  devServer: {
-    https: false,
-    port: 8080,
+  devServer:{
+    overlay: false,
+    https: true,
+    port: 8083,
     open: true,
     proxy: {
       '/api': {
-        target: `http://${URL}/`
+        target: 'https://3.38.93.132:8080/'
       },
-    },
-    historyApiFallback: true,
-    hot: true,
+    }
   },
   css: {
     sourceMap: process.env.NODE_ENV !== 'production'
