@@ -12,6 +12,12 @@ import "./plugins/fontAwesomeIcon";
 Vue.config.productionTip = false
 Vue.use(Vuetify);	
 Vue.component('menu-icon', MenuIcon);
+
+//iconfont 인스턴스화 중에 옵션 추가 
+export default new Vuetify({ icons: { 
+  iconfont: 'md' // 'md' || 'mdi' || 'fa' || 'fa4' 
+} }) 
+
 new Vue({
   router,
   store,

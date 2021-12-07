@@ -6,7 +6,7 @@ module.exports = {
     open: true,
     proxy: {
       '/api': {
-        target: `https://${URL}/`
+        target: `http://${URL}/`
       },
     },
     historyApiFallback: true,

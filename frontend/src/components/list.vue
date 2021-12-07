@@ -53,18 +53,33 @@
                 bottom
                 right
                 fab
+                @click="showDialog()"
               >
                 +
               </v-btn>
-            </v-fab-transition>
+      </v-fab-transition>
+      <v-dialog v-model="listDialog" max-width="500">
+            <listModal @hide="hideDialog()" @submit="submit">
+                <template v-slot:body>
+                    <v-text-field placeholder="내용을 입력하세요"/>
+                </template>
+            </listModal>
+      </v-dialog>
     </v-list>
     
 </template>
 
 <script>
+import listModal from "./listModal.vue"
   export default {
+    name: "list",
+    components: {
+        listModal
+    },
     data: () => ({
       selected: [2],
+      isClick:false,
+      listDialog : false,
       items: [
         {
           action: '15 min',
@@ -98,6 +113,14 @@
         },
       ],
     }),
+    methods:{
+      showDialog() {
+        this.listDialog = true
+      },
+      hideDialog() {
+        this.listDialog = false
+      },
+    },
   }
 </script>
 <style scoped>

@@ -7,6 +7,7 @@ export default {
   namespaced: true,
   state: {
     userInfo: null,
+    userName: null,
     accessToken: "",
     accessEstate: null,
     
@@ -24,7 +25,12 @@ export default {
   },
   mutations: {
     LOGIN(state, payload) {
-      console.log("로그인 완");
+      const decode = jwt_decode(payload.accessToken);
+      const info = decode.userInfo;
+      console.log(info);
+      state.accessToken = payload.accessToken;
+      localStorage.setItem("accessToken", state.accessToken);
+
     },
     USERINFO(state, payload) {
       state.userInfo = payload;
@@ -44,14 +50,13 @@ export default {
   actions: {
     requestRegister(context, payload) {
       let body = payload
-
       http.post('/api/join', body).then(() => {
         VueSimpleAlert.fire({
           title: "SUCCESS",
           text: "회원가입이 완료 되었습니다.👋",
           type: "success",
         })
-        router.push('/login');
+        router.push('/');
       }).catch((err) => {
         if (err.response.status == 409) {
           VueSimpleAlert.alert("중복된 아이디 입니다.😭");
@@ -59,11 +64,10 @@ export default {
       });
     },
     requestLogin({ commit }, user) {
-      console.log("흠?")
       http
-        .post(`/api/login`, user)
+        .post(`/api/auth/login`, user)
         .then(({ data }) => {
-          
+          console.log(data);
           commit("LOGIN", data);
           VueSimpleAlert.fire({
             title: "로그인 성공",
@@ -80,7 +84,7 @@ export default {
               text: "아이디와 패드워드를 다시 확인해주세요.😭",
               type: "error",
             })
-          } else if (err.response.status == 409) {
+          } else if (err.response.status == 404) {
             VueSimpleAlert.fire({
               title: "로그인 실패",
               text: "회원정보가 없습니다.😭",
@@ -167,30 +171,7 @@ export default {
           }
         });
     },
-    requestEstate({ commit }, estateNum) {
-   
-      http
-        .get(`/api/v1/users/estate`, { params: { registrationNumber: estateNum } })
-        .then((res) => {
-          commit("user/ESTATEINFO", res.data.estateInfo, { root: true });
-          VueSimpleAlert.fire({
-            title: "SUCCESS",
-            text: "사업자 번호가 확인되었습니다.",
-            type: "success",
-          })
-
-        })
-        .catch((error) => {
-          if (error.response.data.statusCode == 500) {
-            commit("ESTATENUMBER", false);
-            VueSimpleAlert.fire({
-              title: "FAIL",
-              text: "사업자 번호가 존재하지 않습니다.",
-              type: "error",
-            })
-          }
-        });
-    },
+    
     
   },
 

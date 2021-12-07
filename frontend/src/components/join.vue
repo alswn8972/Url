@@ -6,16 +6,16 @@
                     lazy-validation
             >
                 <v-text-field 
-                    v-model="userName" 
+                    v-model="user.userName" 
                     type="text" 
                     label="이름" 
                     required
                     :rules="userName_rule">
                 </v-text-field>
-                <v-text-field v-model="userId" type="text" label="아이디" required
+                <v-text-field v-model="user.userId" type="text" label="아이디" required
                 :rules="userId_rule">
                 </v-text-field>
-                <v-text-field v-model="userPw" type="password" label="비밀번호" :rules="userPw_rule" required></v-text-field>
+                <v-text-field v-model="user.userPw" type="password" label="비밀번호" :rules="userPw_rule" required></v-text-field>
                 <v-text-field
                     v-model="userPwCk"
                     type="password"
@@ -24,11 +24,12 @@
                     :rules="userPwCk_rule">
                 </v-text-field>
                 <v-text-field
-                    v-model="userEmail"
+                    v-model="user.userEmail"
                     type="text"
                     label="이메일"
                     required
-                    :rules="userEmail_rule">
+                 
+                    >
                 </v-text-field>
 
                 <v-btn color="success" class="mr-4" @click="clickJoin">
@@ -58,10 +59,13 @@
         data() {
             return {
                 valid : false,
-                userName: null, 
-                userPw: null, 
-                userId: null, 
-                userEmail: null, 
+                user: {
+                    userName: "",
+                    userId: "",
+                    userPw: "",
+                    userEmail: "",
+                },
+
                 userPwCk: null,
                 userId_rule: [
                     v => !!v || '아이디는 필수 입력사항입니다.',
@@ -82,7 +86,7 @@
                 userPwCk_rule: [
                     v => this.state === 'ins' ? !!v || '패스워드는 필수 입력사항입니다.' : true,
                     v => !(v && v.length >= 30) || '패스워드는 30자 이상 입력할 수 없습니다.',
-                    v => v === this.userPw || '패스워드가 일치하지 않습니다.'
+                    v => v === this.user.userPw || '패스워드가 일치하지 않습니다.'
                 ],    
                 user_desc_rule: [
                     v => !(v && v.length >= 100) || '설명은 100자 이상 입력할 수 업습니다.'
@@ -97,9 +101,9 @@
             clickJoin(){
                 const validate = this.$refs.form.validate();
                 if(validate){
-                    console.log(validate);
+                    this.requestRegister(this.user);
                 }
-                console.log('하이');
+                
             },
             validate () {
                 this.$refs.form.validate()
