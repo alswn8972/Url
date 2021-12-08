@@ -2,6 +2,7 @@ package com.alive.backend.url.service;
 
 import com.alive.backend.url.dtos.UrlAddRequest;
 import com.alive.backend.url.dtos.UrlDeleteRequest;
+import com.alive.backend.url.dtos.UrlGetResponse;
 import com.alive.backend.url.dtos.UrlPatchRequest;
 import com.alive.backend.url.repository.UrlEntity;
 import com.alive.backend.url.repository.UrlRepository;
