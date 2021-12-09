@@ -9,8 +9,10 @@ import com.alive.backend.url.repository.UrlRepository;
 import com.alive.backend.user.repository.UserEntity;
 import com.alive.backend.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +23,12 @@ public class UrlService {
     public UrlService(final UrlRepository urlRepository, final UserRepository userRepository) {
         this.urlRepository = urlRepository;
         this.userRepository = userRepository;
+    }
+
+    // FIXME: 여기 수정했습니다.
+    @Transactional(readOnly = true)
+    public List<UrlEntity> getUrls() {
+        return urlRepository.findAll();
     }
 
     public List<UrlGetResponse> getMyUrl(String userId) {
@@ -34,6 +42,10 @@ public class UrlService {
                 .collect(Collectors.toList());
     }
 
+    public Optional<UrlEntity> findUrl(Long urlId) {
+        return urlRepository.findById(urlId);
+    }
+
     public void addUrl(UrlAddRequest urlAddRequest){
         UserEntity userEntity = userRepository.findIdByUserIdLike(urlAddRequest.getUserId());
 
@@ -41,7 +53,7 @@ public class UrlService {
         urlEntity.setUrlName(urlAddRequest.getUrlName());
         urlEntity.setUrlContent(urlAddRequest.getUrlContent());
         urlEntity.setUrlAddress(urlAddRequest.getUrlAddress());
-        urlEntity.setIsCheck(0);
+        urlEntity.setPending(false);
         urlEntity.setUserEntity(userEntity);
         urlRepository.save(urlEntity);
     }
@@ -51,6 +63,20 @@ public class UrlService {
         urlEntity.setUrlName(urlPatchRequest.getUrlName());
         urlEntity.setUrlContent(urlPatchRequest.getUrlContent());
         urlEntity.setUrlAddress(urlPatchRequest.getUrlAddress());
+        urlRepository.save(urlEntity);
+    }
+
+    @Transactional
+    public void changePendingStateToTrue(Long id) {
+        UrlEntity urlEntity = urlRepository.findByIdLike(id);
+        urlEntity.setPending(true);
+        urlRepository.save(urlEntity);
+    }
+
+    @Transactional
+    public void changePendingStateToFalse(Long id) {
+        UrlEntity urlEntity = urlRepository.findByIdLike(id);
+        urlEntity.setPending(false);
         urlRepository.save(urlEntity);
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @ToString
 public class UrlEntity extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name="user_id")
     private UserEntity userEntity;
 
