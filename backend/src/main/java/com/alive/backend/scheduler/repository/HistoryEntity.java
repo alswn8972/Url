@@ -12,13 +12,15 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-public class UrlEntity extends BaseEntity {
+public class HistoryEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="user_id")
-    private UserEntity userEntity;
+    @JoinColumn(name="url_id")
+    private UrlEntity urlEntity;
 
-    String urlName;
-    String urlContent;
-    String urlAddress;
-    int isCheck;
+    int stateCode;
+    int readTimeout;
+    int timeout;
+    int contentLength;
+    boolean isAbnormal;
+
 }

@@ -41,6 +41,7 @@ public class UrlService {
         urlEntity.setUrlName(urlAddRequest.getUrlName());
         urlEntity.setUrlContent(urlAddRequest.getUrlContent());
         urlEntity.setUrlAddress(urlAddRequest.getUrlAddress());
+        urlEntity.setIsCheck(0);
         urlEntity.setUserEntity(userEntity);
         urlRepository.save(urlEntity);
     }
