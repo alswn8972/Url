@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,5 +22,8 @@ public class UrlEntity extends BaseEntity {
     String urlName;
     String urlContent;
     String urlAddress;
-    int isCheck;
+    boolean pending;
+
+    @OneToMany(mappedBy = "urlEntity", cascade = CascadeType.ALL)
+    private List<UrlHistoryEntity> urls = new ArrayList<>();
 }

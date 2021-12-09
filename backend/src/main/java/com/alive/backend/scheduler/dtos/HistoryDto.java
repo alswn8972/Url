@@ -8,8 +8,4 @@ public class HistoryDto {
     private UrlDto urlDto;
 
     int stateCode;
-    int readTimeout;
-    int timeout;
-    int contentLength;
-
 }
