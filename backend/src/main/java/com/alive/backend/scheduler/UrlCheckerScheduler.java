@@ -33,7 +33,7 @@ public class UrlCheckerScheduler {
 
         urls.stream().filter(url -> !url.isPending()).forEach(filteredUrl -> {
             int statusCode = UrlConnector.getUrlStatusCode(filteredUrl.getUrlAddress());
-
+            urlService.changeStatusCode(filteredUrl.getId(), statusCode);
             if(statusCode >= 300) {
                 mailService.sendMail(
                         mailService.makeMail(
@@ -47,10 +47,11 @@ public class UrlCheckerScheduler {
                 );
                 // 확인 누르면 false로 바꿔줘야함
                 urlService.changePendingStateToTrue(filteredUrl.getId());
+
             }
 
             // 방어 코드 짜야함
-            UrlEntity urlEntity = urlService.findUrl(filteredUrl.getId()).get();
+            UrlEntity urlEntity = urlService.findUrl(filteredUrl.getId());
             UrlHistoryEntity urlHistoryEntity = new UrlHistoryEntity();
             urlHistoryEntity.setUrlEntity(urlEntity);
             urlHistoryEntity.setStatusCode(statusCode);

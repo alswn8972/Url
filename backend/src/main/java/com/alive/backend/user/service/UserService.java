@@ -29,16 +29,20 @@ public class UserService {
     }
     //아이디 중복검사
     public UserDto getUserId(String userId){
-        return userRepository.findUserByUserIdLike(userId);
+        return userRepository.findUserByUserId(userId);
     }
     @Transactional(readOnly = true)
     public UserDto selectUser(String userId) {
-        return userRepository.findUserByUserIdLike(userId);
+        return userRepository.findUserByUserId(userId);
     }
 
     //로그인
     public UserDto loginUser(UserLoginRequest userLoginRequest){
         String userId = userLoginRequest.getUserId();
-        return userRepository.findUserByUserIdLike(userId);
+        return userRepository.findUserByUserId(userId);
+    }
+
+    public UserDto getId(String userId){
+        return userRepository.findUserByUserId(userId);
     }
 }

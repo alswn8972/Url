@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UrlHistoryRepository extends JpaRepository<UrlHistoryEntity, Long> {
+    //UrlHistoryEntity findByIdOrderByDateDesc(Long id);
 }

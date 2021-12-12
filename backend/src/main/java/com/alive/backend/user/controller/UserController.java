@@ -21,8 +21,9 @@ public class UserController {
 		this.userService = userService;
 	}
 	@PostMapping("/join")
-	public ResponseEntity<? extends BaseResponseBody> register(@RequestBody UserRegisterRequest userRegistRequest){
-		userService.createUser(userRegistRequest);
+	public ResponseEntity<? extends BaseResponseBody> register(@RequestBody UserRegisterRequest userRegisterRequest){
+		System.out.println(userRegisterRequest.getUserPw());
+		userService.createUser(userRegisterRequest);
 		return ResponseEntity.status(201).body(BaseResponseBody.of(201, "Success"));
 	}
 

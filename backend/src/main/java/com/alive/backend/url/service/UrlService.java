@@ -5,17 +5,21 @@ import com.alive.backend.url.dtos.UrlDeleteRequest;
 import com.alive.backend.url.dtos.UrlGetResponse;
 import com.alive.backend.url.dtos.UrlPatchRequest;
 import com.alive.backend.url.repository.UrlEntity;
+import com.alive.backend.url.repository.UrlHistoryEntity;
+import com.alive.backend.url.repository.UrlHistoryRepository;
 import com.alive.backend.url.repository.UrlRepository;
 import com.alive.backend.user.repository.UserEntity;
 import com.alive.backend.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
+@Service("urlService")
 public class UrlService {
     private final UrlRepository urlRepository;
     private final UserRepository userRepository;
@@ -25,12 +29,11 @@ public class UrlService {
         this.userRepository = userRepository;
     }
 
-    // FIXME: 여기 수정했습니다.
+
     @Transactional(readOnly = true)
     public List<UrlEntity> getUrls() {
         return urlRepository.findAll();
     }
-
     public List<UrlGetResponse> getMyUrl(String userId) {
         UserEntity urlList = userRepository.findByUserIdLike(userId);
 
@@ -38,12 +41,13 @@ public class UrlService {
                 .urlId(url.getId())
                 .urlName(url.getUrlName())
                 .urlAddress(url.getUrlAddress())
-                .urlContent(url.getUrlContent()).build())
+                .urlContent(url.getUrlContent())
+                        .urlStatusCode(url.getStatusCode()).build())
                 .collect(Collectors.toList());
     }
 
-    public Optional<UrlEntity> findUrl(Long urlId) {
-        return urlRepository.findById(urlId);
+    public UrlEntity findUrl(Long urlId) {
+        return urlRepository.findByIdLike(urlId);
     }
 
     public void addUrl(UrlAddRequest urlAddRequest){
@@ -80,6 +84,13 @@ public class UrlService {
         urlRepository.save(urlEntity);
     }
 
+    @Transactional
+    public void changeStatusCode(Long id, int code) {
+        UrlEntity urlEntity = urlRepository.findByIdLike(id);
+        urlEntity.setStatusCode(code);
+        urlRepository.save(urlEntity);
+    }
+    @Transactional
     public void deleteUrl(UrlDeleteRequest urlDeleteRequest) {
         urlRepository.deleteById(urlDeleteRequest.getId());
     }

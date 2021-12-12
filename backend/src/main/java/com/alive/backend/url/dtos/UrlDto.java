@@ -11,10 +11,7 @@ import javax.persistence.ManyToOne;
 
 @Data
 public class UrlDto {
-        private UserDto userDto;
-
         String urlName;
         String urlContent;
         String urlAddress;
-        int isCheck;
 }

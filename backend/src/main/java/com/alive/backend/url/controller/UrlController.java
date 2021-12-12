@@ -1,33 +1,38 @@
 package com.alive.backend.url.controller;
 
 import com.alive.backend.common.utils.BaseResponseBody;
+import com.alive.backend.common.utils.UrlConnector;
 import com.alive.backend.url.dtos.UrlAddRequest;
 import com.alive.backend.url.dtos.UrlDeleteRequest;
 import com.alive.backend.url.dtos.UrlGetResponse;
 import com.alive.backend.url.dtos.UrlPatchRequest;
 import com.alive.backend.url.repository.UrlEntity;
 import com.alive.backend.url.service.UrlService;
-import com.fasterxml.jackson.databind.ser.Serializers;
-import org.springframework.http.MediaType;
+import com.alive.backend.user.dtos.UserDto;
+import com.alive.backend.user.repository.UserEntity;
+import com.alive.backend.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.cert.CertPathValidatorException;
+import java.net.URLConnection;
 import java.util.List;
 
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/url")
 public class UrlController {
-    private final UrlService urlService;
+    static final int MOVED_PERMANENTLY = 301;
+    static final int FOUND = 302;
+    static final int  SEE_OTHER= 303;
 
-    public UrlController(UrlService urlService) {
+    private final UrlService urlService;
+    private final UserService userService;
+    public UrlController(UrlService urlService, UserService userService) {
         this.urlService = urlService;
+        this.userService = userService;
     }
 
     @PostMapping("/add")
@@ -52,72 +57,32 @@ public class UrlController {
         }
     }
 
-    @GetMapping("/get/{userId}")
+    @GetMapping("/list/{userId}")
     public ResponseEntity<?> getMyUrl(@PathVariable String userId){
         try {
             List<UrlGetResponse> urlList =  urlService.getMyUrl(userId);
-            return ResponseEntity.ok(urlList);
+            return ResponseEntity.status(200).body(urlList);
         }catch (NullPointerException e){
             return null;
         }
     }
 
-    @GetMapping("/{address:.+}")
-    public ResponseEntity<? extends BaseResponseBody> getUrlState(@PathVariable(value = "address") String address) {
-        String totalUrl = "http://"+address;
-        URL url = null;
-        HttpURLConnection conn = null;
+    @GetMapping("/check/{address:.+}")
+    public ResponseEntity<? extends BaseResponseBody> getUrlState(@PathVariable(value = "address") String address) throws IOException {
 
-        System.out.println(totalUrl);
-        String responseData = "";
-        BufferedReader br = null;
-        StringBuffer sb = null;
-
-        String returnData = "";
+        UrlConnector urlConnector = new UrlConnector();
+        URLConnection urlConnection =null;
         try {
-            //파라미터로 들어온 url을 사용해 connection 실시
-            url = new URL(totalUrl);
-            conn = (HttpURLConnection) url.openConnection();
-
-            //http 요청에 필요한 타입 정의 실시
-            conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestMethod("GET");
-
-            //http 요청 실시
-            conn.connect();
-            System.out.println("http 요청 방식 : "+"GET");
-            System.out.println("http 요청 타입 : "+"application/json");
-            System.out.println("http 요청 주소 : "+totalUrl);
-
-            System.out.println("");
-
-            //http 요청 후 응답 받은 데이터를 버퍼에 쌓는다
-            br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-            sb = new StringBuffer();
-            while ((responseData = br.readLine()) != null) {
-                sb.append(responseData); //StringBuffer에 응답받은 데이터 순차적으로 저장 실시
-            }
-
-            //메소드 호출 완료 시 반환하는 변수에 버퍼 데이터 삽입 실시
-            returnData = sb.toString();
-
-            //http 요청 응답 코드 확인 실시
-            String responseCode = String.valueOf(conn.getResponseCode());
-            System.out.println("http 응답 코드 : "+responseCode);
-            System.out.println("http 응답 데이터 : "+returnData);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            //http 요청 및 응답 완료 후 BufferedReader를 닫아줍니다
-            try {
-                if (br != null) {
-                    br.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            urlConnection = new URL(address).openConnection();
+        }catch (MalformedURLException e){
+            address = "https://"+address;
+            System.out.println(address);
+            urlConnection = new URL(address).openConnection();
         }
+         URL redirectUrl = urlConnector.getFinalURL(urlConnection.getURL());
+
+        System.out.println(redirectUrl.toString());
+
         return null;
     }
 

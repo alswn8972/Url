@@ -1,6 +1,5 @@
 package com.alive.backend.url.service;
 
-import com.alive.backend.url.repository.UrlEntity;
 import com.alive.backend.url.repository.UrlHistoryEntity;
 import com.alive.backend.url.repository.UrlHistoryRepository;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,11 @@ public class UrlHistoryService {
     @Transactional
     public void save(final UrlHistoryEntity urlHistoryEntity) {
         urlHistoryRepository.save(urlHistoryEntity);
+    }
+
+    @Transactional
+    public UrlHistoryEntity getStatus(Long id) {
+        return null;
     }
 
 }
