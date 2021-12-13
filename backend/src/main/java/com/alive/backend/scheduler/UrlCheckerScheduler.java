@@ -53,7 +53,7 @@ public class UrlCheckerScheduler {
             // 방어 코드 짜야함
             UrlEntity urlEntity = urlService.findUrl(filteredUrl.getId());
             UrlHistoryEntity urlHistoryEntity = new UrlHistoryEntity();
-            urlHistoryEntity.setUrlEntity(urlEntity);
+            urlHistoryEntity.setUrlId(urlEntity.getId());
             urlHistoryEntity.setStatusCode(statusCode);
             urlHistoryService.save(urlHistoryEntity);
         });

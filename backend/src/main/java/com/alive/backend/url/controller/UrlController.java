@@ -2,11 +2,9 @@ package com.alive.backend.url.controller;
 
 import com.alive.backend.common.utils.BaseResponseBody;
 import com.alive.backend.common.utils.UrlConnector;
-import com.alive.backend.url.dtos.UrlAddRequest;
-import com.alive.backend.url.dtos.UrlDeleteRequest;
-import com.alive.backend.url.dtos.UrlGetResponse;
-import com.alive.backend.url.dtos.UrlPatchRequest;
+import com.alive.backend.url.dtos.*;
 import com.alive.backend.url.repository.UrlEntity;
+import com.alive.backend.url.repository.UrlHistoryEntity;
 import com.alive.backend.url.service.UrlService;
 import com.alive.backend.user.dtos.UserDto;
 import com.alive.backend.user.repository.UserEntity;
@@ -67,15 +65,31 @@ public class UrlController {
         }
     }
 
-    @GetMapping("/check/{address:.+}")
-    public ResponseEntity<? extends BaseResponseBody> getUrlState(@PathVariable(value = "address") String address) throws IOException {
+    @GetMapping("/history/{urlId}")
+    public ResponseEntity<?> getUrlHistory(@PathVariable Long urlId){
+        try {
+            List<UrlHistoryEntity> urlList =  urlService.getUrlHistory(urlId);
+            return ResponseEntity.status(200).body(urlList);
+        }catch (NullPointerException e){
+            return null;
+        }
+    }
+
+    @PostMapping("/check")
+    public ResponseEntity<? extends BaseResponseBody> getUrlState(@RequestBody UrlCheckStateRequest urlCheckStateRequest) throws IOException {
 
         UrlConnector urlConnector = new UrlConnector();
         URLConnection urlConnection =null;
+        String address = urlCheckStateRequest.getAddress();
         try {
-            urlConnection = new URL(address).openConnection();
+            urlConnection = new URL(urlCheckStateRequest.getAddress()).openConnection();
         }catch (MalformedURLException e){
-            address = "https://"+address;
+            if(urlCheckStateRequest.getProtocol() == 1){
+                address = "http://"+address;
+            }else{
+                address = "https://"+address;
+            }
+
             System.out.println(address);
             urlConnection = new URL(address).openConnection();
         }

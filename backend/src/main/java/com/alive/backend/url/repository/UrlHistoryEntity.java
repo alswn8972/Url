@@ -18,12 +18,8 @@ import java.util.Date;
 @ToString
 @EntityListeners(AuditingEntityListener.class)
 public class UrlHistoryEntity extends BaseEntity {
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name="urlId")
-    private UrlEntity urlEntity;
-
     int statusCode;
-
+    Long urlId;
     @CreatedDate
     LocalDateTime createdDate;
 }

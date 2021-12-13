@@ -27,7 +27,4 @@ public class UrlEntity extends BaseEntity {
     String urlAddress;
     int statusCode;
     boolean pending;
-
-    @OneToMany(mappedBy = "urlEntity", cascade = CascadeType.ALL)
-    private List<UrlHistoryEntity> urls = new ArrayList<>();
 }

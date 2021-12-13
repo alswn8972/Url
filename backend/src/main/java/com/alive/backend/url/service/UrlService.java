@@ -1,32 +1,31 @@
 package com.alive.backend.url.service;
 
-import com.alive.backend.url.dtos.UrlAddRequest;
-import com.alive.backend.url.dtos.UrlDeleteRequest;
-import com.alive.backend.url.dtos.UrlGetResponse;
-import com.alive.backend.url.dtos.UrlPatchRequest;
+import com.alive.backend.url.dtos.*;
 import com.alive.backend.url.repository.UrlEntity;
 import com.alive.backend.url.repository.UrlHistoryEntity;
 import com.alive.backend.url.repository.UrlHistoryRepository;
 import com.alive.backend.url.repository.UrlRepository;
 import com.alive.backend.user.repository.UserEntity;
 import com.alive.backend.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("urlService")
 public class UrlService {
     private final UrlRepository urlRepository;
     private final UserRepository userRepository;
-
-    public UrlService(final UrlRepository urlRepository, final UserRepository userRepository) {
+    private final UrlHistoryRepository urlHistoryRepository;
+    public UrlService(final UrlRepository urlRepository, final UserRepository userRepository, final UrlHistoryRepository urlHistoryRepository) {
         this.urlRepository = urlRepository;
         this.userRepository = userRepository;
+        this.urlHistoryRepository = urlHistoryRepository;
     }
 
 
@@ -44,6 +43,18 @@ public class UrlService {
                 .urlContent(url.getUrlContent())
                         .urlStatusCode(url.getStatusCode()).build())
                 .collect(Collectors.toList());
+    }
+
+    public List<UrlHistoryEntity> getUrlHistory(Long urlId) {
+        LocalDateTime currentTime = LocalDateTime.of(LocalDate.now(), LocalTime.now());
+        LocalDateTime startTime = LocalDateTime.of(LocalDate.now(), LocalTime.now().minusHours(1));
+
+        System.out.println(currentTime);
+        System.out.println(startTime);
+        List<UrlHistoryEntity> urlHistoryEntities = urlHistoryRepository.findByUrlIdAndCreatedDateBetween(urlId,startTime,currentTime);
+
+        System.out.println(urlHistoryEntities.size());
+        return urlHistoryEntities;
     }
 
     public UrlEntity findUrl(Long urlId) {

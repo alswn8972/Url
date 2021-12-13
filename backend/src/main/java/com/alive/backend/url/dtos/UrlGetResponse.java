@@ -19,8 +19,8 @@ public class UrlGetResponse extends BaseResponseBody{
     private final int urlStatusCode;
     @Builder
     public UrlGetResponse(Long urlId, String urlName,
-                          String urlContent,
-                          String urlAddress, int urlStatusCode) {
+                                 String urlContent,
+                                 String urlAddress, int urlStatusCode) {
         this.urlId = urlId;
         this.urlName = urlName;
         this.urlContent = urlContent;
