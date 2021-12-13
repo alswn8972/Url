@@ -1,4 +1,4 @@
-package com.alive.backend.common.mail;
+package com.alive.backend.common.mail.dtos;
 
 import lombok.Builder;
 import lombok.Getter;
