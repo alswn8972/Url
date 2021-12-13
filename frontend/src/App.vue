@@ -1,31 +1,7 @@
 <template>
-  <v-app id="app">
-    <Nav/>
-    <v-main class="">
-      <router-view />
-    </v-main>
-    
-  </v-app>
+  <router-view></router-view>
 </template>
 
-
 <script>
-import Nav from "./components/common/nav";
-export default {
-  name: 'App',
-  components: {
-    Nav,
-  }
-}
+export default {};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top:0px;
-}
-</style>

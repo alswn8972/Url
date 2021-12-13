@@ -1,26 +1,52 @@
-import Vue from 'vue'
-import App from './App.vue'
+// =========================================================
+// * Vue Material Dashboard - v1.5.0
+// =========================================================
+//
+// * Product Page: https://www.creative-tim.com/product/vue-material-dashboard
+// * Copyright 2019 Creative Tim (https://www.creative-tim.com)
+// * Licensed under MIT (https://github.com/creativetimofficial/vue-material-dashboard/blob/master/LICENSE.md)
+//
+// * Coded by Creative Tim
+//
+// =========================================================
+//
+// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-import Vuetify from 'vuetify'		// <-- 추가
-import 'vuetify/dist/vuetify.min.css'
-import router from './routers/router.js';
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Vue from "vue";
+import App from "./App";
+
+
+import router from "./routes/routes.js";
 import store from './store/store.js';
-import MenuIcon from 'vue-material-design-icons/Menu.vue';
-import "./plugins/fontAwesomeIcon";
 
-//ßimport store from './store'
-Vue.config.productionTip = false
-Vue.use(Vuetify);	
-Vue.component('menu-icon', MenuIcon);
+import GlobalComponents from "./globalComponents";
+import GlobalDirectives from "./globalDirectives";
+import Notifications from "./components/NotificationPlugin";
 
-//iconfont 인스턴스화 중에 옵션 추가 
-export default new Vuetify({ icons: { 
-  iconfont: 'md' // 'md' || 'mdi' || 'fa' || 'fa4' 
-} }) 
+// MaterialDashboard plugin
+import MaterialDashboard from "./material-dashboard";
 
+import Chartist from "chartist";
+
+
+
+Vue.prototype.$Chartist = Chartist;
+
+
+Vue.use(MaterialDashboard);
+Vue.use(GlobalComponents);
+Vue.use(GlobalDirectives);
+Vue.use(Notifications);
+
+/* eslint-disable no-new */
 new Vue({
-  router,
+  el: "#app",
+  render: (h) => h(App),
   store,
-  vuetify : new Vuetify(),
-  render: h => h(App),
-}).$mount('#app')
+  router,
+  data: {
+    Chartist: Chartist,
+  },
+});

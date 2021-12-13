@@ -1,13 +1,13 @@
 import jwt_decode from 'jwt-decode';
 import http from '@/utils/http';
-import router from "@/routers/router";
+import router from "@/routes/routes";
 import VueSimpleAlert from "vue-simple-alert";
-import axios from 'axios';
 export default {
   namespaced: true,
   state: {
     userInfo: null,
-    userName: null,
+    userName: "",
+    userId:"",
     accessToken: "",
     accessEstate: null,
     
@@ -22,6 +22,12 @@ export default {
     getUserInfo(state) {
       return state.userInfo;
     },
+    getUserName(state) {
+      return state.userName;
+    },
+    getUserId(state) {
+      return state.userId;
+    }
   },
   mutations: {
     LOGIN(state, payload) {
@@ -29,25 +35,23 @@ export default {
       const info = decode.userInfo;
       console.log(info);
       state.accessToken = payload.accessToken;
+      state.userId = info.id;
+      state.userName = info.name;
       localStorage.setItem("accessToken", state.accessToken);
-
+    },
+    LOGOUT(state) {
+      state.accessToken = null;
+      localStorage.clear();
     },
     USERINFO(state, payload) {
       state.userInfo = payload;
     },
-    ESTATEINFO(state, payload) {
-      state.estateInfo = payload;
-    },
-    FAVORITELIST(state, payload) {
-      state.myfavoriteList = payload;
-    },
-    RESIDENCEINFO(state, payload) {
-   
-      state.residenceInfo = payload.residenceInfo;
-      state.totalPage = payload.pageSize;
-    }
+ 
   },
   actions: {
+    requestLogout({commit}) {
+      commit("LOGOUT");
+    },
     requestRegister(context, payload) {
       let body = payload
       http.post('/api/join', body).then(() => {
@@ -74,7 +78,8 @@ export default {
             text: "로그인이 완료 되었습니다.🙌",
             type: "success",
           })
-          
+          if (router.path !== '/')
+            router.push('/');
         })
         .catch((err) => {
           console.log(err);
@@ -84,7 +89,7 @@ export default {
               text: "아이디와 패드워드를 다시 확인해주세요.😭",
               type: "error",
             })
-          } else if (err.response.status == 404) {
+          } else if (err.response.status == 500) {
             VueSimpleAlert.fire({
               title: "로그인 실패",
               text: "회원정보가 없습니다.😭",
@@ -128,18 +133,16 @@ export default {
     },
     requestDuplicate({ commit }, userId) {
       http
-        .get(`/api/v1/users/` + userId)
+        .get(`/api/users/`+userId)
         .then((res) => {
           VueSimpleAlert.fire({
             title: "SUCCESS",
             text: "사용가능한 아이디입니다.",
             type: "success",
           })
-          commit('user/USERID', true, { root: true });
         })
         .catch((error) => {
           if (error.response.data.statusCode == 409) {
-            commit('user/USERID', false, { root: true });
             VueSimpleAlert.fire({
               title: "FAIL",
               text: "이미 존재하는 아이디입니다.",
@@ -148,31 +151,6 @@ export default {
           }
         });
     },
-    
-    requestDuplicate({ commit }, userId) {
-      http
-        .get(`/api/v1/users/` + userId)
-        .then((res) => {
-          VueSimpleAlert.fire({
-            title: "SUCCESS",
-            text: "사용가능한 아이디입니다.",
-            type: "success",
-          })
-          commit('user/USERID', true, { root: true });
-        })
-        .catch((error) => {
-          if (error.response.data.statusCode == 409) {
-            commit('user/USERID', false, { root: true });
-            VueSimpleAlert.fire({
-              title: "FAIL",
-              text: "이미 존재하는 아이디입니다.",
-              type: "error",
-            })
-          }
-        });
-    },
-    
-    
   },
 
 }
