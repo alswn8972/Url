@@ -60,6 +60,7 @@
             return {
                 valid : false,
                 user: {
+                    userFirstName:"",
                     userName: "",
                     userId: "",
                     userPw: "",
