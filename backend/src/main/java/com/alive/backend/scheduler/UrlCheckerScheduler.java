@@ -1,9 +1,9 @@
 package com.alive.backend.scheduler;
 
 import com.alive.backend.common.utils.Assembler;
-import com.alive.backend.common.mail.MailService;
+import com.alive.backend.common.mail.service.MailService;
 import com.alive.backend.common.utils.UrlConnector;
-import com.alive.backend.common.mail.MailWrapper;
+import com.alive.backend.common.mail.dtos.MailWrapper;
 import com.alive.backend.url.dtos.UrlForCheck;
 import com.alive.backend.url.repository.UrlEntity;
 import com.alive.backend.url.repository.UrlHistoryEntity;
