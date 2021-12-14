@@ -7,32 +7,38 @@
                         <h4 class="title">내가 등록한 Url</h4>
                         <p class="category">자신이 등록한 Url 상태를 한눈에 볼 수 있습니다.</p>
                     </md-card-header>
-                    <md-card-content>
+                    <md-card-content v-if="this.urlList != ''">
                         <table-list-item @history="history" table-header-color="blue"></table-list-item>
                     </md-card-content>
+                    <md-card-content text-center v-else>
+                        <p>등록된 Url이 없습니다. 관리하고 계신 Url을 등록해 상태를 확이해보세요! :D</p>
+                    </md-card-content>
+                    
                 </md-card>
             </div>
             <div
                 v-if="isHistory"
                 class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
                 <chart-card
-                    :chart-data="dailySalesChart.data"
-                    :chart-options="dailySalesChart.options"
+                    v-if="this.urlHistory != null"
+                    :chart-data="this.urlHistory.data"
+                    :chart-options="charOption.options"
                     :chart-type="'Line'"
                     data-background-color="blue">
+                    
                     <template slot="content">
-                        <h4 class="title"></h4>
-                        <!-- <p class="category"> <span class="text-success" ><i class="fas
-                        fa-long-arrow-alt-up"></i> 55% </span> increase in today sales. </p> -->
+                        <h4 class="title">{{this.isName}}</h4>
+                        <p class="category">
+                        <span class="text-success"
+                            ><i class="fas fa-long-arrow-alt-up"></i> updated 1 minutes ago
+                        </span>
+                        </p>
                     </template>
-
                     <template slot="footer">
-                        <div class="stats">
-                            <md-icon>access_time</md-icon>
-                            updated 4 minutes ago
-                        </div>
-                        <div class="text-rigth">
-                            <md-button class="md-raised md-info">등록</md-button>
+                        
+                        <div class="md-layout-item md-size-100 text-center">
+                            <md-button class="md-raised md-info mr-3">수정</md-button>
+                            <md-button class="md-raised md-danger">삭제</md-button>
                         </div>
                     </template>
                 </chart-card>
@@ -148,36 +154,14 @@
                 isEmpty: false,
                 isProtocol: false,
                 isHistory: false,
-                dailySalesChart: {
-                    data: {
-                        labels: [
-                            "M",
-                            "T",
-                            "W",
-                            "T",
-                            "F",
-                            "S",
-                            "S"
-                        ],
-                        series: [
-                            [
-                                200,
-                                201,
-                                200,
-                                200,
-                                200,
-                                200,
-                                200
-                            ]
-                        ]
-                    },
+                charOption :{
                     options: {
                         lineSmooth: this
                             .$Chartist
                             .Interpolation
-                            .cardinal({tension: 0}),
-                        low: 100,
-                        high: 500, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                            .cardinal({tension: 2}),
+                        low: 0,
+                        high: 600, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
                         chartPadding: {
                             top: 0,
                             right: 0,
@@ -190,17 +174,22 @@
             }
         },
         created() {
-            this.urlAvaliable = this.urlInit;
+            
         },
         computed: {
             ...mapGetters('url', {
                 urlAvaliable: 'getUrlAvailable',
-                urlInit: 'getInitAvailable'
+                urlInit: 'getInitAvailable',
+                urlList: 'getUrlList',
+                urlHistory: 'getUrlHistory'
             }),
-            ...mapGetters('user', {userId: 'getUserId'})
+            ...mapGetters('user', {userId: 'getUserId',})
+        },
+        mounted(){
+
         },
         methods: {
-            ...mapActions('url', ['requestAddtoCheckUrl', 'requestAddUrl']),
+            ...mapActions('url', ['requestAddtoCheckUrl', 'requestAddUrl', 'requestHistory']),
             clickClose() {
                 this.isEmpty = false;
             },
@@ -208,9 +197,9 @@
                 this.isProtocol = false;
             },
             history(id) {
-                this.urlId = id;
+                this.isName = id.urlName;
                 this.isHistory = true;
-                console.log(this.urlId);
+                setInterval(() => this.requestHistory(id.urlId), 60000);
             },
             clickCheckStatus() {
                 if (this.url.address == "") {

@@ -90,7 +90,7 @@
                         <span><b>프로토콜을 선택해 주세요! 상세한 주소 상태를 알려드립니다. :D</b> </span>
                     </div>
                 </div>
-                <div class="md-layout-item md-small-size-100 md-size-100">
+                <div v-if="this.urlCheck!=null" class="md-layout-item md-small-size-100 md-size-100">
                 <md-table v-model="this.urlCheck">
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
                     <md-table-cell class="code">
@@ -126,18 +126,10 @@ import {
             };
         },
         created(){
-            this.urlCheck = this.urlRemove;
+            this.$store.state.urlCheck = this.urlRemove;
         },
         computed:{
         ...mapGetters('url', {urlCheck:'getUrlCheck', urlRemove:'getUrlInit'}),
-            getUrlCheck: {
-                get(){
-                    return this.urlCheck
-                },
-                set(){
-
-                }
-            }
         },
         methods: {
             ...mapActions('url',['requestCheckUrl']),
@@ -148,6 +140,7 @@ import {
                 this.isProtocol=false;
             },
             clickCheckStatus() {
+                console.log('되나')
                 if(this.url.address == null) {
                     this.isEmpty=true;
                 }if(this.url.protocol == null){

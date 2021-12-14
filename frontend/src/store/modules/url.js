@@ -5,29 +5,41 @@ import VueSimpleAlert from "vue-simple-alert";
 export default {
 namespaced: true,
 state: {
-    urlList: [],
+    urlList: '',
     urlCheck: [],
-    availableAdd:false,
+    availableAdd: false,
+    urlHistory: {
+        data: {
+            labels: [],
+            series: [
+                
+            ]
+        },
+    }
 
     },
-    getters: {
-        getUrlList(state) {
+getters: {
+        getUrlList:(state)=> {
             return state.urlList;
         },
         getUrlCheck:(state)=> {
             return state.urlCheck;
         },
-        getUrlInit(state) {
+        getUrlInit:(state)=> {
             state.urlCheck = null;
             return state.urlCheck;
         },
-        getUrlAvailable(state) {
+        getUrlAvailable:(state)=>{
             return state.availableAdd;
         },
-        getInitAvailable(state) {
+        getInitAvailable:(state)=> {
             state.availableAdd = false;
             return state.availableAdd;
-        }
+        },
+        getUrlHistory:(state)=> {
+            return state.urlHistory;
+        },
+        
 
     },
     mutations: {
@@ -39,11 +51,22 @@ state: {
         },
         URLAVAILABLE(state, payload) {
             state.availableAdd = payload;
+        },
+        URLHISTORY(state, payload) {
+            let len = payload.length;
+            
+            console.log(payload)
+            var statusCode = new Array(len);
+            for (var i = 0; i < len; i++) {
+                state.urlHistory.data.labels[i] = payload[i].createdDate.substring(14, 16);
+                statusCode[i] = payload[i].statusCode;
+            }   
+            state.urlHistory.data.series[0] = statusCode;;
+            
         }
     },
     actions: {
         requestUrlList({ commit }, userId) {
-            console.log(userId);
             //const CSRF_TOKEN = localStorage.getItem("accessToken");
             http
                 .get(`/api/url/list/`+userId)
@@ -88,7 +111,6 @@ state: {
                 });
         },
         requestAddtoCheckUrl({ commit }, url) {
-            console.log(url);
             //const CSRF_TOKEN = localStorage.getItem("accessToken");
             http
                 .post(`/api/url/check/`, url)
@@ -119,6 +141,16 @@ state: {
                             type: "error",
                         })
                     }
+                });
+        },
+        requestHistory({ commit }, urlId) {
+            http
+                .get(`/api/url/history/`+urlId)
+                .then(({ data }) => {
+                    commit("URLHISTORY", data);
+                })
+                .catch((err) => {
+                    console.log(err);
                 });
         },
     },

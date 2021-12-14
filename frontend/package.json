@@ -16,6 +16,7 @@
     "http": "^0.0.1-security",
     "jwt-decode": "^3.1.2",
     "vue": "2.6.14",
+    "vue-chartjs": "^3.5.1",
     "vue-clickaway": "2.2.2",
     "vue-github-buttons": "3.1.0",
     "vue-material": "1.0.0-beta-15",

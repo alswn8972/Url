@@ -1,17 +1,22 @@
 <template>
     <div>
-        <md-table v-model="this.urlList" :table-header-color="tableHeaderColor">
+        <md-table v-if="this.urlList" v-model="this.urlList" :table-header-color="tableHeaderColor">
             <md-table-row
-                @click="showHistory(item.urlId)"
+                @click="showHistory(item)"
                 slot="md-table-row"
                 slot-scope="{ item }">
                 <md-table-cell md-label="이름">{{ item.urlName }}</md-table-cell>
                 <md-table-cell md-label="설명">{{ item.urlContent }}</md-table-cell>
                 <md-table-cell md-label="주소">{{ item.urlAddress }}</md-table-cell>
                 <md-table-cell md-label="상태">
-                    <md-chip v-if="item.urlStatusCode == 200" class="successChip">{{ item.urlStatusCode }}</md-chip>
-                    <md-chip v-else-if="item.urlStatusCode >= 300" class="wraningChip">{{ item.urlStatusCode }}</md-chip>
-                    <md-chip v-else-if="item.urlStatusCode == 400" class="dangerChip">{{ item.urlStatusCode }}</md-chip>
+                    <md-chip v-if="item.urlStatusCode <200">error</md-chip>
+                    <md-chip v-if="item.urlStatusCode >= 200 && item.urlStatusCode < 300" class="successChip">{{ item.urlStatusCode }}</md-chip>
+                    <md-badge v-else-if="item.urlStatusCode >= 300 && item.urlStatusCode < 400" md-content="!">
+                        <md-chip class="wraningChip">{{ item.urlStatusCode }}</md-chip>
+                    </md-badge>
+                    <md-badge v-else-if="item.urlStatusCode >= 400 && item.urlStatusCode < 500" md-content="!">
+                        <md-chip class="dangerChip">{{ item.urlStatusCode }}</md-chip>
+                    </md-badge>
                 </md-table-cell>
             </md-table-row>
         </md-table>
@@ -44,8 +49,11 @@
             ...mapGetters('url', {urlList: 'getUrlList'})
         },
         created() {
-            this.requestUrlList(this.userId);
-        }
+            setInterval(() => this.requestUrlList(this.userId), 60000);            
+        },
+        mounted(){
+            
+        },
     };
 </script>
 <style scoped="scoped">
