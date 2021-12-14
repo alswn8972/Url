@@ -2,11 +2,9 @@ package com.alive.backend.url.controller;
 
 import com.alive.backend.common.utils.BaseResponseBody;
 import com.alive.backend.common.utils.UrlConnector;
-import com.alive.backend.url.dtos.UrlAddRequest;
-import com.alive.backend.url.dtos.UrlDeleteRequest;
-import com.alive.backend.url.dtos.UrlGetResponse;
-import com.alive.backend.url.dtos.UrlPatchRequest;
+import com.alive.backend.url.dtos.*;
 import com.alive.backend.url.repository.UrlEntity;
+import com.alive.backend.url.repository.UrlHistoryEntity;
 import com.alive.backend.url.service.UrlService;
 import com.alive.backend.user.dtos.UserDto;
 import com.alive.backend.user.repository.UserEntity;
@@ -18,6 +16,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -67,23 +66,38 @@ public class UrlController {
         }
     }
 
-    @GetMapping("/check/{address:.+}")
-    public ResponseEntity<? extends BaseResponseBody> getUrlState(@PathVariable(value = "address") String address) throws IOException {
+    @PostMapping("/check")
+    public ResponseEntity<?> getUrlState(@RequestBody UrlCheckStateRequest urlCheckStateRequest) throws IOException {
 
         UrlConnector urlConnector = new UrlConnector();
         URLConnection urlConnection =null;
+        String address = urlCheckStateRequest.getAddress();
         try {
+            if(urlCheckStateRequest.getProtocol() == 1){
+                address = "http://"+address;
+            }else{
+                address = "https://"+address;
+            }
             urlConnection = new URL(address).openConnection();
         }catch (MalformedURLException e){
-            address = "https://"+address;
-            System.out.println(address);
-            urlConnection = new URL(address).openConnection();
+            //urlConnection = new URL(address).openConnection();
         }
-         URL redirectUrl = urlConnector.getFinalURL(urlConnection.getURL());
+        List<UrlStateResponse> urlResult = new ArrayList<>();
+        urlResult = urlConnector.getFinalURL(urlConnection.getURL(), urlResult);
+        if(urlResult.size()==0){
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 Url 입니다."));
+        }
 
-        System.out.println(redirectUrl.toString());
-
-        return null;
+        return ResponseEntity.status(201).body(urlResult);
+    }
+    @GetMapping("/history/{urlId}")
+    public ResponseEntity<?> getUrlHistory(@PathVariable Long urlId){
+        try {
+            List<UrlHistoryEntity> urlList =  urlService.getUrlHistory(urlId);
+            return ResponseEntity.status(200).body(urlList);
+        }catch (NullPointerException e){
+            return null;
+        }
     }
 
 }

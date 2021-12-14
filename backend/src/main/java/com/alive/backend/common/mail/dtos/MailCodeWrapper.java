@@ -11,10 +11,9 @@ public class MailCodeWrapper {
     private final String content;
 
     @Builder
-    public MailCodeWrapper(final String receiver, final String userName, final String authCode) {
+    public MailCodeWrapper(final String receiver, final String authCode) {
         this.receiver = receiver;
-        this.content = String.format("<html> <body> %s님이 등록하신 %s의 인증 코드는 %s 입니다. <br></br></body></html>",
-                userName,
+        this.content = String.format("<html> <body> 인증 코드는 <br</br> %s 입니다.</body></html>",
                 authCode);
     }
 }
