@@ -47,13 +47,15 @@ public class UrlService {
 
     public List<UrlHistoryEntity> getUrlHistory(Long urlId) {
         LocalDateTime currentTime = LocalDateTime.of(LocalDate.now(), LocalTime.now());
-        LocalDateTime startTime = LocalDateTime.of(LocalDate.now(), LocalTime.now().minusHours(1));
+        System.out.println(LocalTime.now().getHour());
+        LocalDateTime startTime = null;
+        if(LocalTime.now().getHour() == 0){
+            startTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(0,0,0,000000));
+        }else{
+            startTime = LocalDateTime.of(LocalDate.now(), LocalTime.now().minusHours(1));
+        }
 
-        System.out.println(currentTime);
-        System.out.println(startTime);
         List<UrlHistoryEntity> urlHistoryEntities = urlHistoryRepository.findByUrlIdAndCreatedDateBetween(urlId,startTime,currentTime);
-
-        System.out.println(urlHistoryEntities.size());
         return urlHistoryEntities;
     }
 

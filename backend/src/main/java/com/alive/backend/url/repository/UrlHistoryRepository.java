@@ -12,4 +12,5 @@ public interface UrlHistoryRepository extends JpaRepository<UrlHistoryEntity, Lo
     //UrlHistoryEntity findByIdOrderByDateDesc(Long id);
 
     List<UrlHistoryEntity> findByUrlIdAndCreatedDateBetween(Long id, LocalDateTime startTime, LocalDateTime currentTime);
+    void deleteByCreatedDateBetween(LocalDateTime startTime, LocalDateTime currentTime);
 }

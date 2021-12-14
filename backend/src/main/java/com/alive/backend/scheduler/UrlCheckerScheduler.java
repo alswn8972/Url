@@ -26,7 +26,7 @@ public class UrlCheckerScheduler {
         this.mailService = mailService;
     }
 
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 */2 * * * *")
     public void schedule() {
         List<UrlEntity> urlEntities = urlService.getUrls();
         List<UrlForCheck> urls = Assembler.urlEntityToUrlForChecker(urlEntities);
@@ -57,6 +57,11 @@ public class UrlCheckerScheduler {
             urlHistoryEntity.setStatusCode(statusCode);
             urlHistoryService.save(urlHistoryEntity);
         });
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void deleteData() {
+        urlHistoryService.deleteData();
     }
 
 }

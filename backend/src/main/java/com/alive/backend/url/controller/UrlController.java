@@ -94,9 +94,12 @@ public class UrlController {
     public ResponseEntity<?> getUrlHistory(@PathVariable Long urlId){
         try {
             List<UrlHistoryEntity> urlList =  urlService.getUrlHistory(urlId);
+            if(urlList.size() == 0){
+                return ResponseEntity.status(400).body("조회된 목록이 존재하지 않습니다.");
+            }
             return ResponseEntity.status(200).body(urlList);
         }catch (NullPointerException e){
-            return null;
+            return ResponseEntity.status(500).body("조회된 목록이 존재하지 않습니다.");
         }
     }
 
