@@ -13,7 +13,7 @@
         </md-button>
 
         <div class="md-collapse">
-          <md-list v-if="this.isLogin==null">
+          <md-list v-if="this.isLogin">
             <div class="btn">
               <md-button class="md-raised" href="/login">Sing In</md-button>
             </div>
@@ -41,7 +41,7 @@ import { mapGetters, mapActions } from 'vuex';
 export default {
   data() {
     return {
-      selectedEmployee: null,
+
     };
   },
   methods: {
@@ -61,8 +61,8 @@ export default {
   mounted() {
 
   },
-  careate() { 
-      
+  careate() {
+
   },
 };
 </script>

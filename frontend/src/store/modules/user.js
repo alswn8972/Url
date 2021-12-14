@@ -10,7 +10,9 @@ export default {
     userId:"",
     accessToken: "",
     accessEstate: null,
-    
+
+    userIdAvailable:false,
+    userEmailAvailable:false,
   },
   getters: {
     getAccessToken(state) {
@@ -27,6 +29,12 @@ export default {
     },
     getUserId(state) {
       return state.userId;
+    },
+    getUseIdAvailable(state){
+      return state.userIdAvailable
+    },
+    getUserEmailAvailable(state){
+      return state.userIdAvailable
     }
   },
   mutations: {
@@ -46,7 +54,13 @@ export default {
     USERINFO(state, payload) {
       state.userInfo = payload;
     },
- 
+    USERIDAVAIL(state, payload){
+      state.userEmailAvailable = payload;
+    },
+    USEREMAILAVAIL(state, payload){
+      state.userEmailAvailable = payload;
+    }
+
   },
   actions: {
     requestLogout({commit}) {
@@ -82,7 +96,6 @@ export default {
             router.push('/');
         })
         .catch((err) => {
-          console.log(err);
           if (err.response.status == 401) {
             VueSimpleAlert.fire({
               title: "로그인 실패",
@@ -92,11 +105,11 @@ export default {
           } else if (err.response.status == 500) {
             VueSimpleAlert.fire({
               title: "로그인 실패",
-              text: "회원정보가 없습니다.😭",
+              text: "회원정보가 없습니다.😱",
               type: "error",
             })
           } else {
-          
+
           }
         });
     },
@@ -108,14 +121,14 @@ export default {
         })
         .then(({ data }) => {
           commit("USERINFO", data);
-         
+
         })
         .catch((err) => {
-       
+
         });
     },
     requestModify({ commit }, user) {
-    
+
       http
         .patch(`/api/v1/users/` + user.userId, user)
         .then(({ data }) => {
@@ -135,6 +148,7 @@ export default {
       http
         .get(`/api/users/`+userId)
         .then((res) => {
+          commit("USERIDAVAIL", true);
           VueSimpleAlert.fire({
             title: "SUCCESS",
             text: "사용가능한 아이디입니다.",
@@ -143,13 +157,51 @@ export default {
         })
         .catch((error) => {
           if (error.response.data.statusCode == 409) {
+            commit("USERIDAVAIL", false);
             VueSimpleAlert.fire({
               title: "FAIL",
-              text: "이미 존재하는 아이디입니다.",
+              text: "이미 존재하는 아이디입니다.😱",
               type: "error",
             })
           }
         });
+    },
+    requestCode(context, email) {
+      http.post('/api/email/code', email).
+      then(({ data }) => {
+        VueSimpleAlert.fire({
+          title: "인증코드 전송 성공",
+          text: "메일을 확인해주세요.🙌",
+          type: "success",
+        })
+      }).catch((err) => {
+        VueSimpleAlert.fire({
+          title: "인증코드 전송 실패",
+          text: "인증을 다시 시도해주세요.😱",
+          type: "error",
+        })
+      });
+    },
+    requestCheckCode(context, payload) {
+      console.log(payload)
+      http.post('/api/email/check', payload).
+      then(({ data }) => {
+        console.log(data)
+        if(data.statusCode == 201)
+        commit("USEREMAILAVAIL", true);
+        VueSimpleAlert.fire({
+          title: "인증 성공",
+          text: "인증코드가 일치합니다.🙌",
+          type: "success",
+        })
+      }).catch((err) => {
+        commit("USEREMAILAVAIL", false);
+        VueSimpleAlert.fire({
+          title: "인증 실패",
+          text: "인증코드를 다시 입력해주세요.😱",
+          type: "error",
+        })
+      });
     },
   },
 

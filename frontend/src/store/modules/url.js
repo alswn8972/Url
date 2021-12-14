@@ -1,4 +1,4 @@
-import jwt_decode from 'jwt-decode';
+
 import http from '@/utils/http';
 import router from "@/routes/routes";
 import VueSimpleAlert from "vue-simple-alert";
@@ -8,13 +8,13 @@ state: {
     urlList: [],
     urlCheck: [],
     availableAdd:false,
-    
+
     },
     getters: {
         getUrlList(state) {
             return state.urlList;
         },
-        getUrlCheck(state) {
+        getUrlCheck:(state)=> {
             return state.urlCheck;
         },
         getUrlInit(state) {
@@ -28,7 +28,7 @@ state: {
             state.availableAdd = false;
             return state.availableAdd;
         }
-    
+
     },
     mutations: {
         URLLIST(state, payload) {
@@ -49,10 +49,10 @@ state: {
                 .get(`/api/url/list/`+userId)
                 .then(({ data }) => {
                     commit("URLLIST", data);
-                
+
                 })
                 .catch((err) => {
-                    
+
                 });
         },
         requestAddUrl({ commit }, body) {
@@ -66,11 +66,11 @@ state: {
                             title: "Save",
                             text: "등록이 완료되었습니다.😀",
                             type: "success",
-                        })    
+                        })
                     }
                 })
                 .catch((err) => {
-                    
+
                 });
         },
         requestCheckUrl({ commit }, url) {
@@ -80,10 +80,11 @@ state: {
                     commit("URLCHECK", data);
                 })
                 .catch((err) => {
-                    if (err.response.status == 404) {
-                        let data = { statusCode: 400, urlAddress:url};
-                        commit("URLCHECK", data);
-                    }
+                    console.log(err);
+                    // if (err.response.status == 404) {
+                    //     let data = { statusCode: 400, urlAddress:url};
+                    //     commit("URLCHECK", data);
+                    // }
                 });
         },
         requestAddtoCheckUrl({ commit }, url) {
@@ -109,6 +110,7 @@ state: {
                     }
                 })
                 .catch((err) => {
+
                     if (err.response.status == 404) {
                         commit("URLAVAILABLE", false);
                         VueSimpleAlert.fire({

@@ -28,22 +28,13 @@
                     </div>
                     <div class="md-layout-item md-small-size-19 md-size-20">
                       <div class="places-buttons text-center">
-                        <md-button
-                          class="md-primary"
-                          
-                          >추가</md-button
-                        >
+                        <md-button class="md-primary">추가</md-button>
                       </div>
                     </div>
-                    <md-select v-model="select" name="item" id="item" md-dense>
-                            <md-option v-for="item in this.urlList" v-bind:key="item.urlId" :value="item.urlId">
-                              {{ item.urlName }}
-                            </md-option>
-                          </md-select>
                     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
                         <md-card class="md-card-plain">
                           <md-card-content>
-                            <md-table v-model="users" :table-header-color="tableHeaderColor">
+                            <md-table v-model="users">
                               <md-table-row slot="md-table-row" slot-scope="{ item }">
                                 <md-table-cell md-label="ID">{{ item.id }}</md-table-cell>
                                 <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
@@ -88,7 +79,7 @@ export default {
           country: "Niger",
           city: "Oud-Turnhout",
         },
-        
+
       ],
 
     }
@@ -100,8 +91,8 @@ export default {
     ...mapActions('user', ["requestRegister", "requestDuplicate"]),
   },
   created(){
-    
+
   },
-  
+
 };
 </script>

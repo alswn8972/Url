@@ -47,7 +47,7 @@ export default {
     },
     imgLogo: {
       type: String,
-      default: require("@/assets/img/vue-logo.png"),
+      default: require("@/assets/img/img-logo.png"),
     },
     sidebarLinks: {
       type: Array,

@@ -17,7 +17,7 @@
                             SITE Monitor를 통해 URL에 대한 상태를 확인하고, <br>리다이렉션 되는 도메인을 확인 할 수 있습니다.
                             </div>
                         </template>
-                        
+
                         </stats-card>
                     </div>
                     <div
@@ -35,7 +35,7 @@
                             자신이 관리하고 있는 URL에 대한 에러, 비정상 상태 알림을<br> 등록된 메일을 통해 실시간으로 받을 수 있습니다.
                             </div>
                         </template>
-                        
+
                         </stats-card>
                     </div>
             <div
@@ -129,7 +129,15 @@ import {
             this.urlCheck = this.urlRemove;
         },
         computed:{
-        ...mapGetters('url', {urlCheck:'getUrlCheck', urlRemove:'getUrlInit'})
+        ...mapGetters('url', {urlCheck:'getUrlCheck', urlRemove:'getUrlInit'}),
+            getUrlCheck: {
+                get(){
+                    return this.urlCheck
+                },
+                set(){
+
+                }
+            }
         },
         methods: {
             ...mapActions('url',['requestCheckUrl']),
