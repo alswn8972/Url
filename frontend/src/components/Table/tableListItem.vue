@@ -10,13 +10,21 @@
                 <md-table-cell md-label="주소">{{ item.urlAddress }}</md-table-cell>
                 <md-table-cell md-label="상태">
                     <md-chip v-if="item.urlStatusCode <200">error</md-chip>
-                    <md-chip v-if="item.urlStatusCode >= 200 && item.urlStatusCode < 300" class="successChip">{{ item.urlStatusCode }}</md-chip>
-                    <md-badge v-else-if="item.urlStatusCode >= 300 && item.urlStatusCode < 400" md-content="!">
+                    <md-chip v-else-if="item.urlStatusCode >= 200 && item.urlStatusCode < 300" class="successChip">{{ item.urlStatusCode }}</md-chip>
+                    <md-badge v-else-if="item.urlStatusCode >= 300 && item.urlStatusCode < 400 && item.urlIsPending==1" md-content="!">
                         <md-chip class="wraningChip">{{ item.urlStatusCode }}</md-chip>
                     </md-badge>
-                    <md-badge v-else-if="item.urlStatusCode >= 400 && item.urlStatusCode < 500" md-content="!">
-                        <md-chip class="dangerChip">{{ item.urlStatusCode }}</md-chip>
+                    <md-chip v-else-if="item.urlStatusCode >= 300 && item.urlStatusCode < 400 && item.urlIsPending==0" class="wraningChip">{{ item.urlStatusCode }}</md-chip>
+                    <md-badge v-else-if="item.urlStatusCode >= 400 && item.urlStatusCode < 500 && item.urlIsPending==1" md-content="!">
+                        <md-chip class="wraningChip">{{ item.urlStatusCode }}</md-chip>
                     </md-badge>
+                    <md-chip v-else-if="item.urlStatusCode >= 400 && item.urlStatusCode < 500 && item.urlIsPending==0" class="dangerChip">{{ item.urlStatusCode }}</md-chip>
+                </md-table-cell>
+                <md-table-cell md-label="상태 확인">
+                    <md-button
+                                v-if="item.urlIsPending"
+                                @click="clickCheck(item)"
+                                class="md-raised md-info">확인</md-button>
                 </md-table-cell>
             </md-table-row>
         </md-table>
@@ -39,9 +47,13 @@
             return {selected: []};
         },
         methods: {
-            ...mapActions('url', ['requestUrlList']),
+            ...mapActions('url', ['requestUrlList', 'requestChangePending']),
             showHistory: function (item) {
                 this.$emit('history', item)
+            },
+            clickCheck: function(item){
+              console.log("chip누름")
+                this.requestChangePending(item.id)
             }
         },
         computed: {
@@ -49,10 +61,10 @@
             ...mapGetters('url', {urlList: 'getUrlList'})
         },
         created() {
-            setInterval(() => this.requestUrlList(this.userId), 60000);            
+            setInterval(() => this.requestUrlList(this.userId), 60000);
         },
         mounted(){
-            
+
         },
     };
 </script>

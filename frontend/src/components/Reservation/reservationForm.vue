@@ -13,7 +13,7 @@
                     <div class="md-layout-item md-small-size-100 md-size-100">
                         <md-field>
                           <label for="item">신청 도메인</label>
-                          <md-select v-model="select" name="item" id="item" md-dense>
+                          <md-select @md-selected="onChange($event)" v-model="select" name="item" id="item" md-dense>
                             <md-option v-for="item in this.urlList" v-bind:key="item.urlId" :value="item.urlId">
                               {{ item.urlName }}
                             </md-option>
@@ -32,19 +32,17 @@
                       </div>
                     </div>
                     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
-                        <md-card class="md-card-plain">
+                        <md-card class="md-card-plain" >
                           <md-card-content>
-                            <md-table v-model="users">
-                              <md-table-row slot="md-table-row" slot-scope="{ item }">
-                                <md-table-cell md-label="ID">{{ item.id }}</md-table-cell>
-                                <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
-                                <md-table-cell md-label="Salary">{{ item.salary }}</md-table-cell>
-                                <md-table-cell md-label="Country">{{ item.country }}</md-table-cell>
-                                <md-table-cell md-label="City">{{ item.city }}</md-table-cell>
+                            <md-table v-if="this.mailGroups.length!=0" v-model="this.mailGroups">
+                              <md-table-row slot="md-table-row">
+                                <md-table-cell md-label="순서" v-for="(item, key) in this.mailGroups" :key="key" v-bind:value="key">{{item}}</md-table-cell>
                               </md-table-row>
                             </md-table>
+                            <p v-else>등록된 메일이 없습니다. 메일을 등록해 상태 알림을 함께 받아보세요!</p>
                           </md-card-content>
                         </md-card>
+
                       </div>
                     <div class="md-layout-item md-size-100 text-center">
                       <md-button class="md-raised md-info">알림신청</md-button>
@@ -84,15 +82,23 @@ export default {
 
     }
   },
-  computed:{
-    ...mapGetters('url', {urlList:'getUrlList'}),
-  },
-  methods:{
-    ...mapActions('user', ["requestRegister", "requestDuplicate"]),
-  },
-  created(){
+  mounted(){
 
   },
+  computed:{
+    ...mapGetters('url', {urlList:'getUrlList', mailGroups:'getUrlMails'}),
+  },
+  methods:{
+    ...mapActions('url', ["requestRegisterMail",]),
+    onChange(event){
+      console.log(event);
+
+      this.requestRegisterMail(event)
+      console.log(this.mailGroups.length)
+    }
+
+  },
+
 
 };
 </script>

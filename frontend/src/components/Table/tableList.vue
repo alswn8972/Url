@@ -13,7 +13,7 @@
                     <md-card-content text-center v-else>
                         <p>등록된 Url이 없습니다. 관리하고 계신 Url을 등록해 상태를 확이해보세요! :D</p>
                     </md-card-content>
-                    
+
                 </md-card>
             </div>
             <div
@@ -25,7 +25,7 @@
                     :chart-options="charOption.options"
                     :chart-type="'Line'"
                     data-background-color="blue">
-                    
+
                     <template slot="content">
                         <h4 class="title">{{this.isName}}</h4>
                         <p class="category">
@@ -35,7 +35,7 @@
                         </p>
                     </template>
                     <template slot="footer">
-                        
+
                         <div class="md-layout-item md-size-100 text-center">
                             <md-button class="md-raised md-info mr-3">수정</md-button>
                             <md-button class="md-raised md-danger">삭제</md-button>
@@ -174,7 +174,7 @@
             }
         },
         created() {
-            
+
         },
         computed: {
             ...mapGetters('url', {
@@ -199,7 +199,9 @@
             history(id) {
                 this.isName = id.urlName;
                 this.isHistory = true;
-                setInterval(() => this.requestHistory(id.urlId), 60000);
+                this.requestHistory(id.urlId).then(()=>{
+                  console.log("123");
+                });
             },
             clickCheckStatus() {
                 if (this.url.address == "") {

@@ -9,7 +9,7 @@
             <h4 class="title">Successful responses</h4>
           </md-card-header>
           <md-card-content>
-            <md-table v-model="success" :table-header-color="tableHeaderColor">
+            <md-table v-model="success">
               <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="상태">{{ item.status }}</md-table-cell>
                 <md-table-cell md-label="코드">{{ item.code }}</md-table-cell>

@@ -12,10 +12,11 @@ state: {
         data: {
             labels: [],
             series: [
-                
+
             ]
         },
-    }
+    },
+    urlMails:[],
 
     },
 getters: {
@@ -39,7 +40,9 @@ getters: {
         getUrlHistory:(state)=> {
             return state.urlHistory;
         },
-        
+        getUrlMails:(state)=> {
+            return state.urlMails;
+        }
 
     },
     mutations: {
@@ -54,15 +57,23 @@ getters: {
         },
         URLHISTORY(state, payload) {
             let len = payload.length;
-            
-            console.log(payload)
             var statusCode = new Array(len);
             for (var i = 0; i < len; i++) {
                 state.urlHistory.data.labels[i] = payload[i].createdDate.substring(14, 16);
                 statusCode[i] = payload[i].statusCode;
-            }   
-            state.urlHistory.data.series[0] = statusCode;;
-            
+            }
+            state.urlHistory.data.series[0] = statusCode;
+
+        },
+        URLMAILS(state, payload) {
+            var splitEmailGroup = payload.emails[0].emailGroup.split(',');
+            for(var i in splitEmailGroup){
+                state.urlMails[i] = splitEmailGroup[i];
+            }
+            console.log(state.urlMails[0])
+        },
+        URLMAILSINIT(state){
+            state.urlMails = [];
         }
     },
     actions: {
@@ -153,6 +164,26 @@ getters: {
                     console.log(err);
                 });
         },
+         async requestRegisterMail({commit}, urlId){
+            await http.get(`/api/reservation/`+urlId)
+            .then(({data})=> {
+                commit("URLMAILS", data)
+            })
+            .catch((err) => {
+                console.log(err)
+                commit("URLMAILSINIT")
+            })
+        },
+        requestChangePending({commit}, urlId){
+            http.get(`/api/url/check/pending`+urlId)
+            .then(({data})=> {
+
+            })
+            .catch((err) => {
+                console.log(err)
+
+            })
+        }
     },
 
 }
