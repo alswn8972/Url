@@ -8,9 +8,8 @@ export default {
     userInfo: null,
     userName: "",
     userId:"",
-    accessToken: "",
-    accessEstate: null,
-
+    accessToken: null,
+    id:null,
     userIdAvailable:false,
     userEmailAvailable:false,
   },
@@ -35,6 +34,9 @@ export default {
     },
     getUserEmailAvailable(state){
       return state.userIdAvailable
+    },
+    getUserUniqueId(state) {
+      return state.id;
     }
   },
   mutations: {
@@ -45,6 +47,7 @@ export default {
       state.accessToken = payload.accessToken;
       state.userId = info.id;
       state.userName = info.name;
+      state.id = info.isNumber;
       localStorage.setItem("accessToken", state.accessToken);
     },
     LOGOUT(state) {

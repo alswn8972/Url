@@ -13,7 +13,7 @@
         </md-button>
 
         <div class="md-collapse">
-          <md-list v-if="this.isLogin == null">
+          <md-list v-if="isLogin == null">
             <div class="btn">
               <md-button class="md-raised" href="/login">Sing In</md-button>
             </div>
