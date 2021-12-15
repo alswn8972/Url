@@ -13,4 +13,6 @@ public class UrlStateResponse {
     private final int statusCode;
     @ApiModelProperty(name="urlAddress", example="http://naver.com")
     private final String urlAddress;
+
+
 }

@@ -6,6 +6,5 @@ import lombok.Data;
 @Data
 public class HistoryDto {
     private UrlDto urlDto;
-
     int stateCode;
 }

@@ -20,5 +20,5 @@ import java.util.Date;
 public class ReservationEntity extends BaseEntity {
     private Long urlId;
     private Long userId;
-    String emailGroup;
+    private String emailGroup;
 }

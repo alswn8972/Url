@@ -4,6 +4,7 @@ import com.alive.backend.user.dtos.UserLoginRequest;
 import com.alive.backend.user.repository.UserRepository;
 import com.alive.backend.user.service.UserService;
 import com.fasterxml.jackson.databind.ser.Serializers;
+import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import com.alive.backend.user.dtos.UserRegisterRequest;
 
 import java.util.NoSuchElementException;
 
+@Api(value = "사용자 API", tags = {"User"})
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api")

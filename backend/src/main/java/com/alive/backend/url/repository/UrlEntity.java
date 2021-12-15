@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,5 +27,6 @@ public class UrlEntity extends BaseEntity {
     String urlContent;
     String urlAddress;
     int statusCode;
+    LocalDateTime checkTime;
     boolean pending;
 }

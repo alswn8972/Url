@@ -15,5 +15,6 @@ import lombok.ToString;
 public class MailEntity extends BaseEntity {
     private String code;
     private String userEmail;
+
 }
 

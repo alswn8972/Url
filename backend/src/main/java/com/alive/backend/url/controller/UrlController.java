@@ -9,6 +9,7 @@ import com.alive.backend.url.service.UrlService;
 import com.alive.backend.user.dtos.UserDto;
 import com.alive.backend.user.repository.UserEntity;
 import com.alive.backend.user.service.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Api(value = "도메인 API", tags = {"Url"})
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/url")
@@ -62,7 +65,7 @@ public class UrlController {
             List<UrlGetResponse> urlList =  urlService.getMyUrl(userId);
             return ResponseEntity.status(200).body(urlList);
         }catch (NullPointerException e){
-            return null;
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "등록한 URL이 존재하지 않습니다."));
         }
     }
 
@@ -102,5 +105,8 @@ public class UrlController {
             return ResponseEntity.status(500).body("조회된 목록이 존재하지 않습니다.");
         }
     }
-
+    @GetMapping("/check/pending/{urlId}")
+    public void changePending(@PathVariable Long urlId){
+        urlService.changePendingStateToFalse(urlId);
+    }
 }

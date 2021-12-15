@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.NoSuchElementException;
 
-@Api(value = "인증 API", tags = {"Auth."})
+@Api(value = "인증 API", tags = {"Auth"})
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

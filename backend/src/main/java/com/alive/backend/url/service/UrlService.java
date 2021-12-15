@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,8 @@ public class UrlService {
                 .urlName(url.getUrlName())
                 .urlAddress(url.getUrlAddress())
                 .urlContent(url.getUrlContent())
+                        .urlIsPending(url.isPending())
+                        .urlCheckTime(url.getCheckTime())
                         .urlStatusCode(url.getStatusCode()).build())
                 .collect(Collectors.toList());
     }
@@ -101,6 +104,7 @@ public class UrlService {
     public void changeStatusCode(Long id, int code) {
         UrlEntity urlEntity = urlRepository.findByIdLike(id);
         urlEntity.setStatusCode(code);
+        urlEntity.setCheckTime(LocalDateTime.now());
         urlRepository.save(urlEntity);
     }
     @Transactional
