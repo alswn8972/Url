@@ -21,10 +21,9 @@
                     <md-chip v-else-if="item.urlStatusCode >= 400 && item.urlStatusCode < 500 && item.urlIsPending==0" class="dangerChip">{{ item.urlStatusCode }}</md-chip>
                 </md-table-cell>
                 <md-table-cell md-label="상태 확인">
-                    <md-button
-                                v-if="item.urlIsPending"
-                                @click="clickCheck(item)"
-                                class="md-raised md-info">확인</md-button>
+                    <md-table-cell md-label="검사시간">
+                    {{item.urlCheckTime}}
+                  </md-table-cell>
                 </md-table-cell>
             </md-table-row>
         </md-table>

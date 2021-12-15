@@ -20,14 +20,14 @@
                 v-if="isHistory"
                 class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
                 <chart-card
-                    v-if="this.urlHistory != null"
-                    :chart-data="this.urlHistory.data"
+                    v-if="urlHistory != null"
+                    :chart-data="urlHistory.data"
                     :chart-options="charOption.options"
                     :chart-type="'Line'"
                     data-background-color="blue">
 
                     <template slot="content">
-                        <h4 class="title">{{this.isName}}</h4>
+                        <h4 class="title">{{isName}}</h4>
                         <p class="category">
                         <span class="text-success"
                             ><i class="fas fa-long-arrow-alt-up"></i> updated 1 minutes ago
@@ -198,10 +198,11 @@
             },
             history(id) {
                 this.isName = id.urlName;
-                this.isHistory = true;
+                this.isHistory = false;
                 this.requestHistory(id.urlId).then(()=>{
                   console.log("123");
                 });
+                this.isHistory = true;
             },
             clickCheckStatus() {
                 if (this.url.address == "") {

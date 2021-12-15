@@ -175,7 +175,7 @@ getters: {
             })
         },
         requestChangePending({commit}, urlId){
-            http.get(`/api/url/check/pending`+urlId)
+            http.get(`/api/url/check/pending/`+urlId)
             .then(({data})=> {
 
             })
