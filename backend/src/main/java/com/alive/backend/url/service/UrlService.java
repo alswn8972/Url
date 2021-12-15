@@ -61,11 +61,11 @@ public class UrlService {
         List<UrlHistoryEntity> urlHistoryEntities = urlHistoryRepository.findByUrlIdAndCreatedDateBetween(urlId,startTime,currentTime);
         return urlHistoryEntities;
     }
-
+    @Transactional
     public UrlEntity findUrl(Long urlId) {
         return urlRepository.findByIdLike(urlId);
     }
-
+    @Transactional
     public void addUrl(UrlAddRequest urlAddRequest){
         UserEntity userEntity = userRepository.findIdByUserIdLike(urlAddRequest.getUserId());
 
@@ -77,7 +77,7 @@ public class UrlService {
         urlEntity.setUserEntity(userEntity);
         urlRepository.save(urlEntity);
     }
-
+    @Transactional
     public void patchUrl(UrlPatchRequest urlPatchRequest) {
         UrlEntity urlEntity = urlRepository.findByIdLike(Long.valueOf(urlPatchRequest.getId()));
         urlEntity.setUrlName(urlPatchRequest.getUrlName());

@@ -35,7 +35,6 @@ public class AuthController {
 
         try {
             UserDto userDto = userService.getUserId(userLoginRequest.getUserId());
-            System.out.println(userDto.getUserName());
             if(passwordEncoder.matches(password, userDto.getUserPw()))
                 return ResponseEntity.ok(UserLoginResponse.of(200, "Success", JwtTokenUtil.getToken(userDto)));
             return ResponseEntity.status(401).body(UserLoginResponse.of(401, "잘못된 비밀번호입니다.", null));

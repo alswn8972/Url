@@ -12,6 +12,7 @@ import com.alive.backend.url.service.UrlService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.mail.internet.AddressException;
 import java.util.List;
 
 @Component
@@ -35,16 +36,20 @@ public class UrlCheckerScheduler {
             int statusCode = UrlConnector.getUrlStatusCode(filteredUrl.getUrlAddress());
             urlService.changeStatusCode(filteredUrl.getId(), statusCode);
             if(statusCode >= 300) {
-                mailService.sendMail(
-                        mailService.makeMail(
-                                MailWrapper.builder()
-                                        .receiver(filteredUrl.getUserEmail())
-                                        .userName(filteredUrl.getUserName())
-                                        .urlAddress(filteredUrl.getUrlAddress())
-                                        .statusCode(statusCode)
-                                        .build()
-                        )
-                );
+                try {
+                    mailService.sendMail(
+                            mailService.makeMail(
+                                    MailWrapper.builder()
+                                            .receiver(filteredUrl.getUserEmail())
+                                            .userName(filteredUrl.getUserName())
+                                            .urlAddress(filteredUrl.getUrlAddress())
+                                            .statusCode(statusCode)
+                                            .build(),filteredUrl.getId()
+                            )
+                    );
+                } catch (AddressException e) {
+                    e.printStackTrace();
+                }
                 // 확인 누르면 false로 바꿔줘야함
                 urlService.changePendingStateToTrue(filteredUrl.getId());
 

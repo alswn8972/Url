@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
-    ReservationEntity findByUrlId(Long urlId);
+    List<ReservationEntity> findByUrlId(Long urlId);
 }

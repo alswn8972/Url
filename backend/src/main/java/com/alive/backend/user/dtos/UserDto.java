@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class UserDto {
+    @ApiModelProperty(name="id", example="1")
+    private final Long id;
     @ApiModelProperty(name="Name", example="강민주")
     private final String userName;
     @ApiModelProperty(name="ID", example="alswn8972")

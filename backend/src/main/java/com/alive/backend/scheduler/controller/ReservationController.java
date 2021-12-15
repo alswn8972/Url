@@ -31,10 +31,10 @@ public class ReservationController {
 
     @GetMapping("/{urlId}")
     public ResponseEntity<? extends BaseResponseBody> getUrlMails(@PathVariable Long urlId){
-        ReservationEntity res = reservationService.getEmails(urlId);
+        List<ReservationEntity> res = reservationService.getEmails(urlId);
         if(res == null){
-            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "등록된 이메일이 존재하지 않습니다."));
+            return ResponseEntity.status(404).body(ReserveMailResponse.of(404, "등록된 이메일이 존재하지 않습니다.", null));
         }
-        return ResponseEntity.status(201).body(ReserveMailResponse.of(201, "", res.getEmailGroup()));
+        return ResponseEntity.status(201).body(ReserveMailResponse.of(201, "이메일이 조회되었습니다.", res));
     }
 }

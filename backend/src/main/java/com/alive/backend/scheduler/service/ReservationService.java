@@ -21,10 +21,11 @@ public class ReservationService {
         ReservationEntity reservationEntity = new ReservationEntity();
         reservationEntity.setUrlId(reserveAddRequest.getUrlId());
         reservationEntity.setEmailGroup(reserveAddRequest.getEmailGroup());
+        reservationEntity.setUserId(reserveAddRequest.getUserId());
         reservationRepository.save(reservationEntity);
     }
-    public ReservationEntity getEmails(Long urlId){
-        ReservationEntity emails = reservationRepository.findByUrlId(urlId);
+    public List<ReservationEntity> getEmails(Long urlId){
+        List<ReservationEntity> emails = reservationRepository.findByUrlId(urlId);
         return emails;
     }
 }

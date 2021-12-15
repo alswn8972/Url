@@ -11,9 +11,9 @@ import java.util.List;
 @Data
 public class ReserveMailResponse extends BaseResponseBody {
     @ApiModelProperty(name="email 리스트", example="cherrykang97@naver, ")
-    String emails;
+    List<ReservationEntity> emails;
 
-    public static ReserveMailResponse of(Integer statusCode, String message, String emails) {
+    public static ReserveMailResponse of(Integer statusCode, String message, List<ReservationEntity> emails) {
         ReserveMailResponse res = new ReserveMailResponse();
         res.setStatusCode(statusCode);
         res.setMessage(message);

@@ -6,23 +6,30 @@ import com.alive.backend.common.mail.dtos.MailDto;
 import com.alive.backend.common.mail.dtos.MailWrapper;
 import com.alive.backend.common.mail.repository.MailEntity;
 import com.alive.backend.common.mail.repository.MailRepository;
+import com.alive.backend.scheduler.dtos.ReserveMailResponse;
+import com.alive.backend.scheduler.dtos.ReserveSendMailResponse;
+import com.alive.backend.scheduler.repository.ReservationEntity;
+import com.alive.backend.scheduler.repository.ReservationRepository;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.Optional;
+import java.util.List;
 
 @Service("MailService")
 public class MailService {
     private final JavaMailSender javaMailSender;
     private final MailRepository mailRepository;
-    public MailService(final JavaMailSender javaMailSender, final MailRepository mailRepository) {
+    private final ReservationRepository reservationRepository;
+    public MailService(final JavaMailSender javaMailSender, final MailRepository mailRepository, ReservationRepository reservationRepository) {
         this.javaMailSender = javaMailSender;
         this.mailRepository = mailRepository;
+        this.reservationRepository = reservationRepository;
     }
     public String getTempPassword(){
         char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
@@ -39,12 +46,17 @@ public class MailService {
     }
 
 
-    public MimeMessage makeMail(MailWrapper mailWrapper) {
+    public MimeMessage makeMail(MailWrapper mailWrapper, Long id) throws AddressException {
         MimeMessage mail = javaMailSender.createMimeMessage();
-
+        List<ReservationEntity> res = reservationRepository.findByUrlId(id);
+        InternetAddress[] receiver = new InternetAddress[res.size()+1];
+        receiver[0]=new InternetAddress(mailWrapper.getReceiver());
+        for(int i = 1; i<res.size()+1;i++){
+            receiver[i]=new InternetAddress(res.get(i-1).getEmailGroup());
+        }
         try {
             mail.setFrom(mailWrapper.getSender());
-            mail.setRecipients(Message.RecipientType.TO, mailWrapper.getReceiver());
+            mail.setRecipients(Message.RecipientType.TO, receiver);
             mail.setSubject(mailWrapper.getSubject());
             mail.setText(mailWrapper.getContent(), "UTF-8", "html");
         } catch (MessagingException e) {
