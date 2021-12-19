@@ -45,15 +45,13 @@ public class JwtTokenUtil {
     }
 
     public static String getToken(UserDto userDto) {
-        System.out.println(userDto.getUserId());
-        System.out.println(userDto.getUserName());
-        System.out.println(userDto.getId());
         Date expires = JwtTokenUtil.getTokenExpiration(expirationTime);
         Map<String, String > token = new HashMap<String, String>();
 
         token.put("idNumber", userDto.getId().toString());
         token.put("id",userDto.getUserId());
         token.put("name", userDto.getUserName());
+        token.put("userEmail", userDto.getUserEmail());
 
 
         return JWT.create()

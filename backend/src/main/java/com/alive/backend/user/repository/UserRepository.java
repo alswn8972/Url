@@ -15,5 +15,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByUserIdLike(String userId);
 //    List<UrlEntity> findUrls
     List<UrlEntity> findUrlsByUserIdLike(String userId);
+
 }
 

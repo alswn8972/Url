@@ -1,11 +1,14 @@
 package com.alive.backend.scheduler.controller;
 
 import com.alive.backend.common.utils.BaseResponseBody;
+import com.alive.backend.scheduler.dtos.MailPatchRequest;
 import com.alive.backend.scheduler.dtos.ReserveAddRequest;
 import com.alive.backend.scheduler.dtos.ReserveMailResponse;
 import com.alive.backend.scheduler.repository.ReservationEntity;
 import com.alive.backend.scheduler.service.ReservationService;
 import com.alive.backend.url.dtos.UrlAddRequest;
+import com.alive.backend.url.dtos.UrlDeleteRequest;
+import com.alive.backend.url.dtos.UrlPatchRequest;
 import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,4 +40,17 @@ public class ReservationController {
         }
         return ResponseEntity.status(201).body(ReserveMailResponse.of(201, "이메일이 조회되었습니다.", res));
     }
+
+    @PatchMapping("/patch")
+    public ResponseEntity<? extends BaseResponseBody> patchUrl(@RequestBody MailPatchRequest mailPatchRequest){
+        if(reservationService.patchMail(mailPatchRequest))
+            return ResponseEntity.status(201).body(BaseResponseBody.of(201, "수정이 완료되었습니다."));
+        else
+            return ResponseEntity.status(201).body(BaseResponseBody.of(404, "수정이 실패했습니다. 다시 한번 시도해주세요."));
+    }
+
+//    @DeleteMapping("/delete")
+//    public ResponseEntity<? extends BaseResponseBody> deleteUrl(@RequestBody UrlDeleteRequest urlDeleteRequest){
+//
+//    }
 }

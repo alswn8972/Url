@@ -12,4 +12,4 @@ import java.util.List;
 @Repository
 public interface UrlRepository extends JpaRepository<UrlEntity, Long> {
     UrlEntity findByIdLike(Long id);
-}
+    }

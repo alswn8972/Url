@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("urlService")
@@ -73,7 +74,8 @@ public class UrlService {
         urlEntity.setUrlName(urlAddRequest.getUrlName());
         urlEntity.setUrlContent(urlAddRequest.getUrlContent());
         urlEntity.setUrlAddress(urlAddRequest.getUrlAddress());
-        urlEntity.setPending(false);
+        urlEntity.setStatusCode(200);
+        urlEntity.setPending(true);
         urlEntity.setUserEntity(userEntity);
         urlRepository.save(urlEntity);
     }
@@ -83,6 +85,7 @@ public class UrlService {
         urlEntity.setUrlName(urlPatchRequest.getUrlName());
         urlEntity.setUrlContent(urlPatchRequest.getUrlContent());
         urlEntity.setUrlAddress(urlPatchRequest.getUrlAddress());
+        urlEntity.setStatusCode(200);
         urlRepository.save(urlEntity);
     }
 
@@ -108,8 +111,60 @@ public class UrlService {
         urlRepository.save(urlEntity);
     }
     @Transactional
-    public void deleteUrl(UrlDeleteRequest urlDeleteRequest) {
-        urlRepository.deleteById(urlDeleteRequest.getId());
+    public void deleteUrl(Long urlId) {
+        urlRepository.deleteById(urlId);
     }
 
+    @Transactional
+    public List<UrlGetResponse> searchUrl(UrlSearchRequest urlSearchRequest) {
+        Optional<UserEntity> urlList = userRepository.findById(urlSearchRequest.getId());
+
+        List<UrlGetResponse> urls;
+        if(urlSearchRequest.getOption()==1){
+            urls = urlList.get().getUrls().stream().filter(url ->
+                    url.getUrlName().contains(urlSearchRequest.getKeyword())).map(filterUrl -> UrlGetResponse.builder()
+                    .urlId(filterUrl.getId())
+                    .urlName(filterUrl.getUrlName())
+                    .urlAddress(filterUrl.getUrlAddress())
+                    .urlContent(filterUrl.getUrlContent())
+                    .urlCheckTime(filterUrl.getCheckTime())
+                    .urlIsPending(filterUrl.isPending())
+                    .urlStatusCode(filterUrl.getStatusCode()).build()).collect(Collectors.toList());
+        }
+
+        else if(urlSearchRequest.getOption()==2){
+            urls = urlList.get().getUrls().stream().filter(url ->
+                    url.getUrlContent().contains(urlSearchRequest.getKeyword())).map(filterUrl -> UrlGetResponse.builder()
+                    .urlId(filterUrl.getId())
+                    .urlName(filterUrl.getUrlName())
+                    .urlAddress(filterUrl.getUrlAddress())
+                    .urlContent(filterUrl.getUrlContent())
+                    .urlCheckTime(filterUrl.getCheckTime())
+                    .urlIsPending(filterUrl.isPending())
+                    .urlStatusCode(filterUrl.getStatusCode()).build()).collect(Collectors.toList());
+
+        }else if(urlSearchRequest.getOption()==3){
+            urls = urlList.get().getUrls().stream().filter(url ->
+                    url.getUrlAddress().contains(urlSearchRequest.getKeyword())).map(filterUrl -> UrlGetResponse.builder()
+                    .urlId(filterUrl.getId())
+                    .urlName(filterUrl.getUrlName())
+                    .urlAddress(filterUrl.getUrlAddress())
+                    .urlContent(filterUrl.getUrlContent())
+                    .urlCheckTime(filterUrl.getCheckTime())
+                    .urlIsPending(filterUrl.isPending())
+                    .urlStatusCode(filterUrl.getStatusCode()).build()).collect(Collectors.toList());
+        }else{
+            urls = urlList.get().getUrls().stream().filter(url ->
+                    (Integer.toString(url.getStatusCode())).equals((urlSearchRequest.getKeyword()))).map(filterUrl -> UrlGetResponse.builder()
+                    .urlId(filterUrl.getId())
+                    .urlName(filterUrl.getUrlName())
+                    .urlAddress(filterUrl.getUrlAddress())
+                    .urlContent(filterUrl.getUrlContent())
+                    .urlCheckTime(filterUrl.getCheckTime())
+                    .urlIsPending(filterUrl.isPending())
+                    .urlStatusCode(filterUrl.getStatusCode()).build()).collect(Collectors.toList());
+        }
+
+        return urls;
+    }
 }

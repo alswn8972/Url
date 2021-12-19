@@ -13,7 +13,7 @@ public class Assembler {
                 .userName(url.getUserEntity().getUserName())
                 .userEmail(url.getUserEntity().getUserEmail())
                 .urlAddress(url.getUrlAddress())
-                .pending(url.isPending())
+                        .pending(url.isPending())
                 .build())
                 .collect(Collectors.toList());
     }

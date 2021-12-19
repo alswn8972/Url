@@ -49,10 +49,10 @@ public class UrlController {
         return ResponseEntity.status(201).body(BaseResponseBody.of(201, "수정이 완료되었습니다."));
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<? extends BaseResponseBody> deleteUrl(@RequestBody UrlDeleteRequest urlDeleteRequest){
+    @DeleteMapping("/delete/{urlId}")
+    public ResponseEntity<? extends BaseResponseBody> deleteUrl(@PathVariable Long urlId){
         try {
-            urlService.deleteUrl(urlDeleteRequest);
+            urlService.deleteUrl(urlId);
             return ResponseEntity.status(201).body(BaseResponseBody.of(201, "삭제가 완료되었습니다."));
         }catch (NullPointerException e){
             return ResponseEntity.status(500).body(BaseResponseBody.of(500, "다시 시도해주시길 바랍니다."));
@@ -108,5 +108,15 @@ public class UrlController {
     @GetMapping("/check/pending/{urlId}")
     public void changePending(@PathVariable Long urlId){
         urlService.changePendingStateToFalse(urlId);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<? extends BaseResponseBody> addUrl(@RequestBody UrlSearchRequest urlSearchRequest){
+        List<UrlGetResponse> searchList;
+        if(urlService.searchUrl(urlSearchRequest).size()==0){
+            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "조회된 Url이 존재하지 않습니다."));
+        }
+        searchList = urlService.searchUrl(urlSearchRequest);
+        return ResponseEntity.status(201).body(UrlSearchResponse.of(201, "Url 조회를 성공하였습니다.", searchList));
     }
 }
