@@ -6,8 +6,35 @@
                     <md-card-header data-background-color="blue">
                         <h4 class="title">내가 등록한 Url</h4>
                         <p class="category">자신이 등록한 Url 상태를 한눈에 볼 수 있습니다.</p>
+                        
+                        <div class="md-layout">
+                            <div class="md-layout-item md-medium-size-20 md-xsmall-size-40 md-size-20">
+                            <md-field>
+                                <label for="protocol" class="search">기준</label>
+                                <md-select v-model="search.option" name="protocol" id="protocol">
+                                    <md-option value="1">이름</md-option>
+                                    <md-option value="2">설명</md-option>
+                                    <md-option value="3">주소</md-option>
+                                    <md-option value="4">상태코드</md-option>
+                                </md-select>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item md-medium-size-65 md-xsmall-size-60 md-size-65">
+                            <md-field>
+                                <md-input v-model="search.keyword" type="text"></md-input>
+                            </md-field>
+                        </div>
+                        <div class="md-layout-item md-medium-size-15 md-xsmall-size-100 md-size-15">
+                            <div class="places-buttons text-center">
+                                <md-button
+                                    @click="clickSearchUrl"
+                                    >검색</md-button >
+                            </div>
+                        </div>
+                        </div>
+                        
                     </md-card-header>
-                    <md-card-content v-if="urlList != null">
+                    <md-card-content style="height:200px;overflow: scroll;" v-if="urlList != null">
                         <table-list-item @history="history" table-header-color="blue"></table-list-item>
                     </md-card-content>
                     <md-card-content text-center v-else>
@@ -16,49 +43,79 @@
 
                 </md-card>
             </div>
-            <div  class="md-layout" v-if="urlNoHistory==false" >
-                <div class="md-layout-item md-medium-size-50 md-xsmall-size-50 md-size-25">
-                    <stats-card v-if="urlHistory.success != null" data-background-color="green">
-                    <template slot="header">
-                        <md-icon>sentiment_very_satisfied</md-icon>
-                    </template>
+                <div class="md-layout">
+                    <div v-if="urlNoHistory != 0" class="md-layout-item md-medium-size-50 md-xsmall-size-50 md-size-25">
+                        <stats-card v-if="urlHistory.success != null" data-background-color="green">
+                        <template slot="header">
+                            <md-icon>sentiment_very_satisfied</md-icon>
+                        </template>
 
-                    <template slot="content">
-                        <p class="category">SUCCESS</p>
-                        <h3 class="title">{{urlHistory.success}}/{{urlHistory.total}}</h3>
-                    </template>
-                    <template slot="footer">
-                        <p>클라이언트의 요청을<br>성공적으로 수행한 횟수는<br> {{urlHistory.total}}회 중 {{urlHistory.success}}회 입니다.</p>
-                    </template>
-                    </stats-card>
-                </div>
-                <div class="md-layout-item md-medium-size-50 md-xsmall-size-50 md-size-25">
-                    <stats-card data-background-color="red" v-if="urlHistory.fail != null">
-                    <template slot="header">
-                        <md-icon>sentiment_dissatisfied</md-icon>
-                    </template>
-                    <template slot="content">
-                        <p class="category">FAIL</p>
-                        <h3 class="title">{{urlHistory.fail}}/{{urlHistory.total}}</h3>
-                    </template>
-                    <template slot="footer">
-                        <p>리다이렉션 혹은<br>클라이어트, 서버 오류는<br>총 {{urlHistory.total}}회 중 {{urlHistory.fail}}회 입니다.</p>
-                    </template>
-                    </stats-card>
-                </div>
-                <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-50">
-                        <md-card class="md-card-plain">
-                            <md-card-header data-background-color="blue">
-                                <h4 class="title">{{this.isName}}</h4>
-                                <p class="category">현재 도메인의 상태확인 히스토리입니다.(2초 지연시 오류로 간주)</p>
-                            </md-card-header>
-                            <md-card-content style="height: 200px;overflow: scroll;" >
-                                <history-table></history-table>
-                            </md-card-content>
-                        </md-card>
+                        <template slot="content">
+                            <p class="category">SUCCESS</p>
+                            <h3 class="title">{{urlHistory.success}}/{{urlHistory.total}}</h3>
+                        </template>
+                        <template slot="footer">
+                            <p>클라이언트의 요청을<br>성공적으로 수행한 횟수는<br> {{urlHistory.total}}회 중 {{urlHistory.success}}회 입니다.</p>
+                        </template>
+                        </stats-card>
+                    </div>
+                    <div v-if="urlNoHistory != 0" class="md-layout-item md-medium-size-50 md-xsmall-size-50 md-size-25">
+                        <stats-card data-background-color="red" v-if="urlHistory.fail != null">
+                        <template slot="header">
+                            <md-icon>sentiment_dissatisfied</md-icon>
+                        </template>
+                        <template slot="content">
+                            <p class="category">FAIL</p>
+                            <h3 class="title">{{urlHistory.fail}}/{{urlHistory.total}}</h3>
+                        </template>
+                        <template slot="footer">
+                            <p>리다이렉션 혹은<br>클라이어트, 서버 오류는<br>총 {{urlHistory.total}}회 중 {{urlHistory.fail}}회 입니다.</p>
+                        </template>
+                        </stats-card>
+                    </div>
+                    <div v-if="urlNoHistory != 0" class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-50">
+                            <md-card class="md-card-plain">
+                                <md-card-header data-background-color="blue">
+                                    <h4 class="title">{{this.isName}}</h4>
+                                    <p class="category">현재 도메인의 상태확인 히스토리입니다.(2초 지연시 오류로 간주)</p>
+                                    <div class="md-layout">
+                                        <div class="md-layout-item md-medium-size-80 md-xsmall-size-80 md-size-80">
+                                        <md-field>
+                                            <label for="time" class="search">검색</label>
+                                            <md-select v-model="historySearch.option" name="protocol" id="protocol">
+                                                <md-option value="1">30분 전</md-option>
+                                                <md-option value="2">1시간 전(default)</md-option>
+                                                <md-option value="3">12시간 전</md-option>
+                                                <md-option value="4">1일 전</md-option>
+                                            </md-select>
+                                        </md-field>
+                                        </div>
+                                        <div class="md-layout-item md-medium-size-15 md-xsmall-size-15 md-size-15">
+                                            <div class="places-buttons text-center">
+                                                <md-button
+                                                    @click="clickHistoryUrl"
+                                                    >검색</md-button >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </md-card-header>
+                                <md-card-content style="height: 150px;overflow: scroll;" >
+                                    <history-table></history-table>
+                                </md-card-content>
+                            </md-card>
                     </div>
                 </div>
+                <!-- <div class="md-layout">
+                    <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
+                        <div class="alert alert-danger">
+                            <span>
+                                <b>검사된 결과가 존재하지 않습니다. 사이트 주소를 수정해주세요.</b>
+                            </span>
+                        </div>
+                    </div>
+                </div>  -->
             </div>
+            
         <md-speed-dial class="md-bottom-right">
             <md-speed-dial-target @click="showDialog = true" class="md-primary">
                 <md-icon class="icon">add</md-icon>
@@ -140,9 +197,6 @@
                     </span>
                 </div>
             </div>
-            <!-- <md-dialog-actions> <md-button class="md-primary" @click="showDialog =
-            false">Close</md-button> <md-button class="md-primary" @click="showDialog =
-            false">Save</md-button> </md-dialog-actions> -->
         </md-dialog>
     </div>
 </template>
@@ -169,6 +223,15 @@
                     urlName: '',
                     urlContent: ''
                 },
+                search:{
+                    id:'',
+                    option:'',
+                    keyword:'',
+                },
+                historySearch:{
+                    id:'',
+                    option:'',
+                },
                 isName:'',
                 isEmpty: false,
                 isProtocol: false,
@@ -188,11 +251,14 @@
                         }
                     }
                 },
-                urlId: ''
+                urlId: '',
+                interval: '',
+                searchInterval:'',
             }
         },
         created() {
-            this.requestUrlList(this.userId);
+            clearInterval(this.searchInterval);
+            this.interval = setInterval(() => this.requestUrlList(this.userId), 10000);
         },
         computed: {
             ...mapGetters('url', {
@@ -202,13 +268,13 @@
                 urlHistory: 'getUrlHistory',
                 urlNoHistory:'getUrlNoHistory',
             }),
-            ...mapGetters('user', {userId: 'getUserId'})
+            ...mapGetters('user', {userId: 'getUserId', id:'getUserUniqueId'})
         },
         mounted(){
 
         },
         methods: {
-            ...mapActions('url', ['requestAddtoCheckUrl', 'requestAddUrl', 'requestHistory', 'requestUrlList']),
+            ...mapActions('url', ['requestResetHistory','requestAddtoCheckUrl', 'requestAddUrl', 'requestHistory', 'requestUrlList', 'requestSearchUrl', 'requestSearchHistory']),
             clickClose() {
                 this.isEmpty = false;
             },
@@ -217,6 +283,7 @@
             },
             history(id) {
                 this.isName = id.urlName;
+                this.historySearch.id= id.urlId;
                 this.requestHistory(id.urlId);     
             },
             clickCheckStatus() {
@@ -253,9 +320,23 @@
                 this.url.urlName = '';
                 this.urlContent = '';
                 this.showDialog = false;
-                this
-                    .$router
-                    .go();
+                
+            },
+            clickSearchUrl(){
+                clearInterval(this.interval);
+                this.requestResetHistory();
+                this.search.id = this.id;
+                this.requestSearchUrl(this.search);
+                this.searchInterval = setInterval(() => this.requestSearchUrl(this.search), 10000);
+                
+            },
+            clickHistoryUrl(){
+                console.log(this.historySearch.id)
+                if(this.historySearch.option ==  ''){
+                   this.historySearch.option = 2; 
+                }
+                console.log(this.historySearch.option)
+                this.requestSearchHistory(this.historySearch);
             }
         }
     };
@@ -266,5 +347,9 @@
     }
     .addCard {
         margin-top: 0.3% !important;
+    }
+    .search{
+        color:white !important;
+        align-content: center !important;
     }
 </style>

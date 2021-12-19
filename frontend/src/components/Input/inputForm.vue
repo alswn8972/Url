@@ -90,18 +90,18 @@
                         <span><b>프로토콜을 선택해 주세요! 상세한 주소 상태를 알려드립니다. :D</b> </span>
                     </div>
                 </div>
-                <div v-if="this.urlCheck!=null" class="md-layout-item md-small-size-100 md-size-100">
+            <div v-if="this.urlCheck!=null" class="md-layout-item md-small-size-100 md-size-100">
                 <md-table v-model="this.urlCheck">
-                <md-table-row slot="md-table-row" slot-scope="{ item }">
-                    <md-table-cell class="code">
-                        <md-chip v-if="item.statusCode >= 200 && item.statusCode < 300" class="successChip">{{ item.statusCode }}</md-chip>
-                        <md-chip v-if="item.statusCode >= 300 && item.statusCode < 400" class="wraningChip">{{ item.statusCode }}</md-chip>
-                        <md-chip v-if="item.statusCode >= 400" class="dangerChip">{{ item.statusCode }}</md-chip>
-                    </md-table-cell>
-                    <md-table-cell>{{ item.urlAddress }}</md-table-cell>
-                </md-table-row>
-    </md-table>
-  </div>
+                    <md-table-row slot="md-table-row" slot-scope="{ item }">
+                        <md-table-cell class="code">
+                            <md-chip v-if="item.statusCode >= 200 && item.statusCode < 300" class="successChip">{{ item.statusCode }}</md-chip>
+                            <md-chip v-if="item.statusCode >= 300 && item.statusCode < 400" class="wraningChip">{{ item.statusCode }}</md-chip>
+                            <md-chip v-if="item.statusCode >= 400" class="dangerChip">{{ item.statusCode }}</md-chip>
+                        </md-table-cell>
+                        <md-table-cell>{{ item.urlAddress }}</md-table-cell>
+                    </md-table-row>
+                </md-table>
+            </div>
         </div>
     </div>
 </template>
@@ -140,7 +140,6 @@ import {
                 this.isProtocol=false;
             },
             clickCheckStatus() {
-                console.log('되나')
                 if(this.url.address == null) {
                     this.isEmpty=true;
                 }if(this.url.protocol == null){

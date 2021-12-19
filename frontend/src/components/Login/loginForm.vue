@@ -13,7 +13,7 @@
                             <div class="md-layout-item md-small-size-100 md-size-100">
                             <md-field :class="getValidationClass('userId')">
                                 <label for="userId">아이디</label>
-                                <md-input name="userId" id="userId" autocomplete="given-name" v-model="form.userId" :disabled="sending" />
+                                <md-input type="text" name="userId" id="userId" autocomplete="given-name" v-model="form.userId" :disabled="sending" />
                                 <span class="md-error" v-if="!$v.form.userId.required">아이디는 필수 입력 값입니다.</span>
                             </md-field>
                             </div>
@@ -21,7 +21,7 @@
                             <div class="md-layout-item md-small-size-100 md-size-100">
                             <md-field :class="getValidationClass('userPw')">
                                 <label for="userPw">비밀번호</label>
-                                <md-input name="luserPw" id="userPw" autocomplete="family-name" v-model="form.userPw" :disabled="sending" />
+                                <md-input type="password" name="luserPw" id="userPw" autocomplete="family-name" v-model="form.userPw" :disabled="sending" />
                                 <span class="md-error" v-if="!$v.form.userPw.required">비밀번호는 필수 입력 값입니다.</span>
 
                             </md-field>

@@ -46,13 +46,14 @@ export default {
   },
   methods: {
     ...mapActions('user',["requestLogout"]),
+    ...mapActions('url',["requestReset"]),
     toggleSidebar() {
       this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);
     },
     clickLogout(){
       this.requestLogout();
-      console.log(this.isLogin)
-      this.$router.push('/')
+      this.requestReset();
+      this.$router.push('/').catch(()=>{});
     }
   },
   computed:{
