@@ -1,10 +1,10 @@
-package com.alive.backend.scheduler.dtos;
+package com.alive.backend.mailGroup.dtos;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class ReserveAddRequest {
+public class MailAddRequest {
     @ApiModelProperty(name="userId", example="1")
     private final Long userId;
     @ApiModelProperty(name="urlId", example="1")

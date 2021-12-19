@@ -36,7 +36,7 @@ public class UrlService {
         return urlRepository.findAll();
     }
     public List<UrlGetResponse> getMyUrl(String userId) {
-        UserEntity urlList = userRepository.findByUserIdLike(userId);
+        UserEntity urlList = userRepository.findIdByUserId(userId);
 
         return urlList.getUrls().stream().map(url -> UrlGetResponse.builder()
                 .urlId(url.getId())
@@ -63,12 +63,13 @@ public class UrlService {
         return urlHistoryEntities;
     }
     @Transactional
-    public UrlEntity findUrl(Long urlId) {
-        return urlRepository.findByIdLike(urlId);
+    public Optional<UrlEntity> findUrl(Long urlId) {
+        Optional<UrlEntity> urlEntity = urlRepository.findById(urlId);
+        return urlEntity;
     }
     @Transactional
     public void addUrl(UrlAddRequest urlAddRequest){
-        UserEntity userEntity = userRepository.findIdByUserIdLike(urlAddRequest.getUserId());
+        UserEntity userEntity = userRepository.findIdByUserId(urlAddRequest.getUserId());
 
         UrlEntity urlEntity = new UrlEntity();
         urlEntity.setUrlName(urlAddRequest.getUrlName());
@@ -81,35 +82,35 @@ public class UrlService {
     }
     @Transactional
     public void patchUrl(UrlPatchRequest urlPatchRequest) {
-        UrlEntity urlEntity = urlRepository.findByIdLike(Long.valueOf(urlPatchRequest.getId()));
-        urlEntity.setUrlName(urlPatchRequest.getUrlName());
-        urlEntity.setUrlContent(urlPatchRequest.getUrlContent());
-        urlEntity.setUrlAddress(urlPatchRequest.getUrlAddress());
-        urlEntity.setPending(true);
-        urlEntity.setStatusCode(200);
-        urlRepository.save(urlEntity);
+        Optional<UrlEntity> urlEntity = urlRepository.findById(Long.valueOf(urlPatchRequest.getId()));
+        urlEntity.get().setUrlName(urlPatchRequest.getUrlName());
+        urlEntity.get().setUrlContent(urlPatchRequest.getUrlContent());
+        urlEntity.get().setUrlAddress(urlPatchRequest.getUrlAddress());
+        urlEntity.get().setPending(false);
+        urlEntity.get().setStatusCode(200);
+        urlRepository.save(urlEntity.get());
     }
 
     @Transactional
     public void changePendingStateToTrue(Long id) {
-        UrlEntity urlEntity = urlRepository.findByIdLike(id);
-        urlEntity.setPending(true);
-        urlRepository.save(urlEntity);
+        Optional<UrlEntity> urlEntity = urlRepository.findById(id);
+        urlEntity.get().setPending(true);
+        urlRepository.save(urlEntity.get());
     }
 
     @Transactional
     public void changePendingStateToFalse(Long id) {
-        UrlEntity urlEntity = urlRepository.findByIdLike(id);
-        urlEntity.setPending(false);
-        urlRepository.save(urlEntity);
+        Optional<UrlEntity> urlEntity = urlRepository.findById(id);
+        urlEntity.get().setPending(false);
+        urlRepository.save(urlEntity.get());
     }
 
     @Transactional
     public void changeStatusCode(Long id, int code) {
-        UrlEntity urlEntity = urlRepository.findByIdLike(id);
-        urlEntity.setStatusCode(code);
-        urlEntity.setCheckTime(LocalDateTime.now());
-        urlRepository.save(urlEntity);
+        Optional<UrlEntity> urlEntity = urlRepository.findById(id);
+        urlEntity.get().setStatusCode(code);
+        urlEntity.get().setCheckTime(LocalDateTime.now());
+        urlRepository.save(urlEntity.get());
     }
     @Transactional
     public void deleteUrl(Long urlId) {

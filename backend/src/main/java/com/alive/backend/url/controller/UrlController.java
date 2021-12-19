@@ -23,15 +23,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/url")
 public class UrlController {
-    static final int MOVED_PERMANENTLY = 301;
-    static final int FOUND = 302;
-    static final int  SEE_OTHER= 303;
-
     private final UrlService urlService;
-    private final UserService userService;
-    public UrlController(UrlService urlService, UserService userService) {
+    public UrlController(final UrlService urlService) {
         this.urlService = urlService;
-        this.userService = userService;
     }
 
     @PostMapping("/add")
@@ -87,7 +81,6 @@ public class UrlController {
         if(urlResult.size()==0){
             return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 Url 입니다."));
         }
-
         return ResponseEntity.status(201).body(urlResult);
     }
     @GetMapping("/history/{urlId}")
@@ -110,13 +103,6 @@ public class UrlController {
             return ResponseEntity.status(500).body("조회된 목록이 존재하지 않습니다.");
         }
         return ResponseEntity.status(200).body(result);
-    }
-
-
-
-    @GetMapping("/check/pending/{urlId}")
-    public void changePending(@PathVariable Long urlId){
-        urlService.changePendingStateToFalse(urlId);
     }
 
     @PostMapping("/search")

@@ -1,8 +1,6 @@
-package com.alive.backend.scheduler;
+package com.alive.backend.common.utils;
 
-import com.alive.backend.common.utils.Assembler;
-import com.alive.backend.common.mail.service.MailService;
-import com.alive.backend.common.utils.UrlConnector;
+import com.alive.backend.common.mail.service.AuthCodeService;
 import com.alive.backend.common.mail.dtos.MailWrapper;
 import com.alive.backend.url.dtos.UrlForCheck;
 import com.alive.backend.url.repository.UrlEntity;
@@ -14,20 +12,21 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.internet.AddressException;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UrlCheckerScheduler {
     private final UrlService urlService;
     private final UrlHistoryService urlHistoryService;
-    private final MailService mailService;
+    private final AuthCodeService authCodeService;
 
-    public UrlCheckerScheduler(final UrlService urlService, final UrlHistoryService urlHistoryService, final MailService mailService) {
+    public UrlCheckerScheduler(final UrlService urlService, final UrlHistoryService urlHistoryService, final AuthCodeService authCodeService) {
         this.urlService = urlService;
         this.urlHistoryService = urlHistoryService;
-        this.mailService = mailService;
+        this.authCodeService = authCodeService;
     }
 
-    @Scheduled(cron = "0 */2 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     public void schedule() {
         List<UrlEntity> urlEntities = urlService.getUrls();
         List<UrlForCheck> urls = Assembler.urlEntityToUrlForChecker(urlEntities);
@@ -37,8 +36,8 @@ public class UrlCheckerScheduler {
             urlService.changeStatusCode(filteredUrl.getId(), statusCode);
             if(statusCode >= 300) {
                 try {
-                    mailService.sendMail(
-                            mailService.makeMail(
+                    authCodeService.sendMail(
+                            authCodeService.makeMail(
                                     MailWrapper.builder()
                                             .receiver(filteredUrl.getUserEmail())
                                             .userName(filteredUrl.getUserName())
@@ -56,9 +55,9 @@ public class UrlCheckerScheduler {
             }
 
             // 방어 코드 짜야함
-            UrlEntity urlEntity = urlService.findUrl(filteredUrl.getId());
+            Optional<UrlEntity> urlEntity = urlService.findUrl(filteredUrl.getId());
             UrlHistoryEntity urlHistoryEntity = new UrlHistoryEntity();
-            urlHistoryEntity.setUrlId(urlEntity.getId());
+            urlHistoryEntity.setUrlId(urlEntity.get().getId());
             urlHistoryEntity.setStatusCode(statusCode);
             urlHistoryService.save(urlHistoryEntity);
         });

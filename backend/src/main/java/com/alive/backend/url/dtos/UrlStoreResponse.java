@@ -1,4 +1,4 @@
-package com.alive.backend.scheduler.dtos;
+package com.alive.backend.url.dtos;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +11,6 @@ public class UrlStoreResponse {
     private final String urlContent;
     @ApiModelProperty(name="url", example="http://bccard.com")
     private final String urlAddress;
-
     @ApiModelProperty(name="userId", example="alswn8972")
     private final String userId;
 }

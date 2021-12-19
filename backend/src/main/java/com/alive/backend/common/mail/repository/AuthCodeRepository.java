@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 @Repository
-public interface MailRepository extends JpaRepository<MailEntity, Long> {
-    MailEntity findByUserEmail(String userEmail);
+public interface AuthCodeRepository extends JpaRepository<AuthCodeEntity, Long> {
+    AuthCodeEntity findByUserEmail(String userEmail);
     void deleteByUserEmail(String userEmail);
-    Optional<MailEntity> findByUserEmailAndCode(String userEmail, String code);
+    Optional<AuthCodeEntity> findByUserEmailAndCode(String userEmail, String code);
 }

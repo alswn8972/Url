@@ -1,20 +1,20 @@
 package com.alive.backend.common.mail.controller;
 
 import com.alive.backend.common.mail.dtos.*;
-import com.alive.backend.common.mail.service.MailService;
+import com.alive.backend.common.mail.service.AuthCodeService;
 import com.alive.backend.common.utils.BaseResponseBody;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Api(value = "이메일 API", tags = {"Email"})
+@Api(value = "이메일 API", tags = {"Mail"})
 @RestController
-@RequestMapping("/api/email")
-public class MailController {
-    private final MailService mailService;
+@RequestMapping("/api/mail")
+public class AuthCodeController {
+    private final AuthCodeService authCodeService;
 
-    public MailController(MailService mailService) {
-        this.mailService = mailService;
+    public AuthCodeController(AuthCodeService authCodeService) {
+        this.authCodeService = authCodeService;
     }
 
     @GetMapping("/code/{email}") // 이메일 인증 코드 보내기
@@ -24,11 +24,11 @@ public class MailController {
     })
     public ResponseEntity<? extends BaseResponseBody> sendCode(
             @ApiParam(value="이메일 인증 정보", required = true) @PathVariable String email){
-        String code = mailService.getTempPassword();
+        String code = authCodeService.getTempPassword();
         MailDto mailDto = new MailDto(code, email);
-        mailService.saveCode(mailDto);
-        mailService.sendMail(
-                mailService.makeCodeMail(
+        authCodeService.saveCode(mailDto);
+        authCodeService.sendMail(
+                authCodeService.makeCodeMail(
                         MailCodeWrapper.builder()
                                 .receiver(email)
                                 .authCode(code)
@@ -45,7 +45,7 @@ public class MailController {
     })
     public ResponseEntity<? extends BaseResponseBody> checkCode(
             @ApiParam(value="이메일 인증 정보", required = true) @RequestBody MailCheckRequest mailCheckRequest){
-        if(!mailService.checkCode(mailCheckRequest).equals(mailCheckRequest.getCode())){
+        if(!authCodeService.checkCode(mailCheckRequest).equals(mailCheckRequest.getCode())){
             return ResponseEntity.status(400).body(BaseResponseBody.of(400, "인증코드가 일치하지 않습니다."));
         }
 

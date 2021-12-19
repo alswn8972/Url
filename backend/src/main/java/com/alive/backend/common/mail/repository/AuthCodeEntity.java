@@ -12,7 +12,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class MailEntity extends BaseEntity {
+public class AuthCodeEntity extends BaseEntity {
     private String code;
     private String userEmail;
 

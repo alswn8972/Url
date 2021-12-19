@@ -10,11 +10,7 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserDto findUserByUserId(String userId);
-    Long findIdByUserId(String userId);
-    UserEntity findIdByUserIdLike(String userId);
+    UserEntity findIdByUserId(String userId);
     UserEntity findByUserIdLike(String userId);
-//    List<UrlEntity> findUrls
-    List<UrlEntity> findUrlsByUserIdLike(String userId);
-
 }
 

@@ -45,11 +45,7 @@ public class UserService {
         String userId = userLoginRequest.getUserId();
         return userRepository.findUserByUserId(userId);
     }
-
-    public UserDto getId(String userId){
-        return userRepository.findUserByUserId(userId);
-    }
-
+    //이메일 수정
     public void patchUser(UserPatchRequest userPatchRequest) {
         Optional<UserEntity> userEntity = userRepository.findById(userPatchRequest.getId());
 

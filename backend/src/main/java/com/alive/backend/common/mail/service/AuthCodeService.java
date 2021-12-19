@@ -4,12 +4,10 @@ import com.alive.backend.common.mail.dtos.MailCheckRequest;
 import com.alive.backend.common.mail.dtos.MailCodeWrapper;
 import com.alive.backend.common.mail.dtos.MailDto;
 import com.alive.backend.common.mail.dtos.MailWrapper;
-import com.alive.backend.common.mail.repository.MailEntity;
-import com.alive.backend.common.mail.repository.MailRepository;
-import com.alive.backend.scheduler.dtos.ReserveMailResponse;
-import com.alive.backend.scheduler.dtos.ReserveSendMailResponse;
-import com.alive.backend.scheduler.repository.ReservationEntity;
-import com.alive.backend.scheduler.repository.ReservationRepository;
+import com.alive.backend.common.mail.repository.AuthCodeEntity;
+import com.alive.backend.common.mail.repository.AuthCodeRepository;
+import com.alive.backend.mailGroup.repository.MailGroupEntity;
+import com.alive.backend.mailGroup.repository.MailGroupRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +20,14 @@ import javax.mail.internet.MimeMessage;
 import java.util.List;
 
 @Service("MailService")
-public class MailService {
+public class AuthCodeService {
     private final JavaMailSender javaMailSender;
-    private final MailRepository mailRepository;
-    private final ReservationRepository reservationRepository;
-    public MailService(final JavaMailSender javaMailSender, final MailRepository mailRepository, ReservationRepository reservationRepository) {
+    private final AuthCodeRepository authCodeRepository;
+    private final MailGroupRepository mailGroupRepository;
+    public AuthCodeService(final JavaMailSender javaMailSender, final AuthCodeRepository authCodeRepository, MailGroupRepository mailGroupRepository) {
         this.javaMailSender = javaMailSender;
-        this.mailRepository = mailRepository;
-        this.reservationRepository = reservationRepository;
+        this.authCodeRepository = authCodeRepository;
+        this.mailGroupRepository = mailGroupRepository;
     }
     public String getTempPassword(){
         char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
@@ -48,7 +46,7 @@ public class MailService {
 
     public MimeMessage makeMail(MailWrapper mailWrapper, Long id) throws AddressException {
         MimeMessage mail = javaMailSender.createMimeMessage();
-        List<ReservationEntity> res = reservationRepository.findByUrlId(id);
+        List<MailGroupEntity> res = mailGroupRepository.findByUrlId(id);
         InternetAddress[] receiver = new InternetAddress[res.size()+1];
         receiver[0]=new InternetAddress(mailWrapper.getReceiver());
         for(int i = 1; i<res.size()+1;i++){
@@ -85,17 +83,17 @@ public class MailService {
     }
     @Transactional
     public void saveCode(MailDto mailDto) {
-        MailEntity mailEntity = new MailEntity();
-        mailEntity.setCode(mailDto.getCode());
-        mailEntity.setUserEmail(mailDto.getUserEmail());
-        if(mailRepository.findByUserEmail(mailDto.getUserEmail())!=null){
-            mailRepository.deleteByUserEmail(mailEntity.getUserEmail());
+        AuthCodeEntity authCodeEntity = new AuthCodeEntity();
+        authCodeEntity.setCode(mailDto.getCode());
+        authCodeEntity.setUserEmail(mailDto.getUserEmail());
+        if(authCodeRepository.findByUserEmail(mailDto.getUserEmail())!=null){
+            authCodeRepository.deleteByUserEmail(authCodeEntity.getUserEmail());
         }
-        mailRepository.save(mailEntity);
+        authCodeRepository.save(authCodeEntity);
     }
     @Transactional
     public String checkCode(MailCheckRequest mailCheckRequest){
-        String code = mailRepository.findByUserEmailAndCode(mailCheckRequest.getEmail(),mailCheckRequest.getCode()).get().getCode();
+        String code = authCodeRepository.findByUserEmailAndCode(mailCheckRequest.getEmail(),mailCheckRequest.getCode()).get().getCode();
         return code;
     }
 }

@@ -1,4 +1,4 @@
-package com.alive.backend.scheduler.dtos;
+package com.alive.backend.mailGroup.dtos;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
