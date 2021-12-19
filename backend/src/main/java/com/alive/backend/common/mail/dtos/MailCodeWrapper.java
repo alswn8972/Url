@@ -13,7 +13,7 @@ public class MailCodeWrapper {
     @Builder
     public MailCodeWrapper(final String receiver, final String authCode) {
         this.receiver = receiver;
-        this.content = String.format("<html> <body> 인증 코드는 <br</br> %s 입니다.</body></html>",
+        this.content = String.format("<html> <body> 인증 코드는 <br></br> %s 입니다.</body></html>",
                 authCode);
     }
 }

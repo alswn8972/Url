@@ -96,7 +96,6 @@ public class MailService {
     @Transactional
     public String checkCode(MailCheckRequest mailCheckRequest){
         String code = mailRepository.findByUserEmailAndCode(mailCheckRequest.getEmail(),mailCheckRequest.getCode()).get().getCode();
-        System.out.println("service"+code);
         return code;
     }
 }

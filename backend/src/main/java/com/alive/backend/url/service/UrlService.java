@@ -85,6 +85,7 @@ public class UrlService {
         urlEntity.setUrlName(urlPatchRequest.getUrlName());
         urlEntity.setUrlContent(urlPatchRequest.getUrlContent());
         urlEntity.setUrlAddress(urlPatchRequest.getUrlAddress());
+        urlEntity.setPending(true);
         urlEntity.setStatusCode(200);
         urlRepository.save(urlEntity);
     }
@@ -166,5 +167,24 @@ public class UrlService {
         }
 
         return urls;
+    }
+
+    public List<UrlHistoryEntity> getSearchHistory(UrlSearchHistoryRequest urlSearchHistoryRequest) {
+        LocalDateTime currentTime = LocalDateTime.of(LocalDate.now(), LocalTime.now());
+        System.out.println(LocalTime.now().getHour());
+        LocalDateTime startTime = null;
+        //1. 30분전 2. 1시간 전 3. 12시간 전 4. 하루 전
+        if(urlSearchHistoryRequest.getOption() == 1){
+            startTime = LocalDateTime.of(LocalDate.now(), LocalTime.now().minusMinutes(30));
+        }else if(urlSearchHistoryRequest.getOption() == 2){
+            startTime = LocalDateTime.of(LocalDate.now(), LocalTime.now().minusHours(1));
+        }else if(urlSearchHistoryRequest.getId() == 3){
+            startTime = LocalDateTime.of(LocalDate.now(), LocalTime.now().minusHours(12));
+        }else{
+            startTime = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.now());
+        }
+
+        List<UrlHistoryEntity> urlHistoryEntities = urlHistoryRepository.findByUrlIdAndCreatedDateBetween(urlSearchHistoryRequest.getId(),startTime,currentTime);
+        return urlHistoryEntities;
     }
 }

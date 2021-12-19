@@ -38,14 +38,13 @@ public class MailController {
         return ResponseEntity.status(201).body(BaseResponseBody.of(201, "인증코드 전송이 성공되었습니다."));
     }
 
-    @PostMapping("/check") // 이메일 인증 코드 보내기
+    @PostMapping("/check") // 이메일 인증 코드 확인하기
     @ApiOperation(value = "이메일", notes = "<strong> 인증 코드 </strong>를 확인한다.")
     @ApiResponses({
             @ApiResponse(code = 201, message = "성공"),
     })
     public ResponseEntity<? extends BaseResponseBody> checkCode(
             @ApiParam(value="이메일 인증 정보", required = true) @RequestBody MailCheckRequest mailCheckRequest){
-        System.out.println(mailCheckRequest.getCode());
         if(!mailService.checkCode(mailCheckRequest).equals(mailCheckRequest.getCode())){
             return ResponseEntity.status(400).body(BaseResponseBody.of(400, "인증코드가 일치하지 않습니다."));
         }

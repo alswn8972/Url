@@ -3,11 +3,8 @@ package com.alive.backend.url.controller;
 import com.alive.backend.common.utils.BaseResponseBody;
 import com.alive.backend.common.utils.UrlConnector;
 import com.alive.backend.url.dtos.*;
-import com.alive.backend.url.repository.UrlEntity;
 import com.alive.backend.url.repository.UrlHistoryEntity;
 import com.alive.backend.url.service.UrlService;
-import com.alive.backend.user.dtos.UserDto;
-import com.alive.backend.user.repository.UserEntity;
 import com.alive.backend.user.service.UserService;
 import io.swagger.annotations.Api;
 import org.springframework.http.ResponseEntity;
@@ -102,9 +99,21 @@ public class UrlController {
             }
             return ResponseEntity.status(200).body(urlList);
         }catch (NullPointerException e){
-            return ResponseEntity.status(500).body("조회된 목록이 존재하지 않습니다.");
+            return ResponseEntity.status(400).body("조회된 목록이 존재하지 않습니다.");
         }
     }
+
+    @PostMapping("/history/option")
+    public ResponseEntity<?> getOptionHistory(@RequestBody UrlSearchHistoryRequest urlSearchHistoryRequest){
+        List<UrlHistoryEntity> result = urlService.getSearchHistory(urlSearchHistoryRequest);
+        if(result.size() == 0){
+            return ResponseEntity.status(500).body("조회된 목록이 존재하지 않습니다.");
+        }
+        return ResponseEntity.status(200).body(result);
+    }
+
+
+
     @GetMapping("/check/pending/{urlId}")
     public void changePending(@PathVariable Long urlId){
         urlService.changePendingStateToFalse(urlId);
