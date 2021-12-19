@@ -117,7 +117,7 @@ export default {
             content : "요청을 수신하였지만, 그에 응하여 행동할 수 없습니다."
           },
           {
-            status:"Non-Authoritative Information",
+            status:"Non-Authoritative",
             code : "203",
             content : "돌려받은 메타 정보 세트가 오리진 서버의 것과 일치하지 않습니다."
           },
@@ -157,27 +157,32 @@ export default {
             },
           ],
         ],
-        //여기부터
+
         error : [
         {
-            status:"Multiple Choice",
-            code : "300",
-            content : "요청에 대해서 하나 이상의 응답이 가능합니다."
+            status:"Bad Request",
+            code : "400",
+            content : "잘못된 문법으로 인하여 서버가 요청하여 이해할 수 없음을 의미합니다."
           },
           {
-            status:"Moved Permanently",
-            code : "301",
-            content : "이 응답 코드는 요청한 리소스의 URI가 변경되었음을 의미합니다. 새로운 URI가 응답에서 아마도 주어질 수 있습니다."
+            status:"Unauthorized",
+            code : "401",
+            content : "이 응답 코드는  '미승인(unauthorized)'를 명확히 하고 있지만, 의미상 이 응답은 '비인증(unauthenticated)'를 의미합니다."
           },
          {
-            status:"Found",
-            code : "302",
-            content : "이 응답 코드는 요청한 리소스의 URI가 일시적으로 변경되었음을 의미합니다."
+            status:"Payment Required",
+            code : "402",
+            content : "이 응답 코드는 나중에 사용될 것을 대비해 예약되었습니다."
+          },
+          {
+            status:"Forbidden",
+            code : "403",
+            content : "클라이언트는 콘텐츠에 접근할 권리를 가지고 있지 않습니다."
           },
           {
             status:"Permanent Redirect",
-            code : "308",
-            content : "리소스가 이제 HTTP 응답 헤더의 Location:에 명시된 영구히 다른 URI에 위치하고 있음을 의미합니다."
+            code : "405",
+            content : "요청한 메소드는 서버에서 알고 있지만, 제거되었고 사용할 수 없습니다."
           },
         ]
         //여기까지

@@ -80,6 +80,7 @@ getters: {
             state.availableAdd = payload;
         },
         URLHISTORY(state, payload) {
+            console.log(payload)
             state.urlHistory = payload;
             var success = 0;
             var fail = 0;

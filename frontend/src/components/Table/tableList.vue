@@ -327,15 +327,15 @@
                 this.requestResetHistory();
                 this.search.id = this.id;
                 this.requestSearchUrl(this.search);
+                clearInterval(this.interval);
                 this.searchInterval = setInterval(() => this.requestSearchUrl(this.search), 10000);
                 
             },
             clickHistoryUrl(){
                 console.log(this.historySearch.id)
                 if(this.historySearch.option ==  ''){
-                   this.historySearch.option = 2; 
+                    this.historySearch.option = 2; 
                 }
-                console.log(this.historySearch.option)
                 this.requestSearchHistory(this.historySearch);
             }
         }
