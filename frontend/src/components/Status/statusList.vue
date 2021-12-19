@@ -5,19 +5,15 @@
         class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
       >
         <md-card>
-          <md-card-header data-background-color="blue"  >
-            <!-- 여기부터 -->
+          <md-card-header data-background-color="blue">
             <h4 @click="visibleSuccessful =!visibleSuccessful" class="title">Successful responses
                 <md-icon v-show="!visibleSuccessful" class=" myicon">add</md-icon> 
                 <md-icon v-show="visibleSuccessful" class=" myicon">menu</md-icon> 
                 </h4>   
-            <!-- 여기까지 -->
 
           </md-card-header>
           <md-card-content>
-            <!--여기 부터-->
             <md-table v-model="success" v-show="visibleSuccessful">
-              <!--여기 까지-->
               <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="상태">{{ item.status }}</md-table-cell>
                 <md-table-cell md-label="코드">{{ item.code }}</md-table-cell>
@@ -30,19 +26,15 @@
       <div
         class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
       >
-         <md-card>
-             <!--여기 부터-->
+        <md-card>
           <md-card-header data-background-color="orange">
             <h4  @click="visibleRedirection =!visibleRedirection" class="title">Redirection messages 
                 <md-icon v-show="!visibleRedirection" class=" myicon">add</md-icon> 
                 <md-icon v-show="visibleRedirection" class=" myicon">menu</md-icon> 
             </h4>
-             <!--여기 까지-->
           </md-card-header>
           <md-card-content>
-            <!--여기 부터-->
             <md-table v-model="redirect" v-show="visibleRedirection">
-              <!--여기 까지-->
               <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="상태">{{ item.status }}</md-table-cell>
                 <md-table-cell md-label="코드">{{ item.code }}</md-table-cell>
@@ -63,16 +55,13 @@
             </h4>
           </md-card-header>
           <md-card-content>
-            <!--여기부터-->
-             <md-table v-model="error" v-show="visibleError">
-           
+            <md-table v-model="error" v-show="visibleError">
               <md-table-row slot="md-table-row" slot-scope="{ item }">
                 <md-table-cell md-label="상태">{{ item.status }}</md-table-cell>
                 <md-table-cell md-label="코드">{{ item.code }}</md-table-cell>
                 <md-table-cell md-label="뜻">{{ item.content }}</md-table-cell>
               </md-table-row>
             </md-table>
-            <!--여기까지-->
           </md-card-content>
         </md-card>
       </div>
