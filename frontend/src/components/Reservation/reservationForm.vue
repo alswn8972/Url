@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    
     <div class="md-layout">
       <div class="md-layout-item md-medium-size-100 md-size-100">
           <form>
@@ -33,24 +34,49 @@
                     </div>
                     <div class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100">
                         <md-card class="md-card-plain" >
-                          <md-card-content>
-                            <md-table v-model="mailGroups">
-                              <md-table-row slot="md-table-row">
-                                <md-table-cell md-label="순서" v-for="(item, key) in mailGroups" :key="key" v-bind:value="key">
-                                  {{key+1}} : {{item.emailGroup}}
-                                </md-table-cell>
-                              </md-table-row>
+                          <md-card-content >
+                            <md-table v-if="mailGroups!=null" v-model="mailGroups">
+                                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                                    <md-table-cell md-label="공유 이메일">
+                                      {{item.emailGroup}}
+                                    </md-table-cell>
+                                    <md-table-cell md-label="수정/삭제">
+                                        <md-chip class="wraningChip" @click="clickModifyEmail(item)">
+                                            수정
+                                        </md-chip>
+                                        <md-chip class="dangerChip">
+                                            삭제
+                                        </md-chip>
+                                    </md-table-cell>
+                                </md-table-row>
                             </md-table>
-                            <!-- <md-table v-if="!mailGroups">
-                              <p>등록된 메일이 없습니다. 결과를 공유하려면 이메일을 추가해주세요! 등록된 URL 상태에 대한 메일을 함꼐 보내드립니다.</p>
-                            </md-table> -->
+                            <p v-else>사이트를 선택해주세요!</p>
                           </md-card-content>
                         </md-card>
-
+                        <md-dialog :md-active.sync="showModifyEmailDialog">
+                          <md-card>
+                                <md-card-header class="addCard">
+                                    이메일 수정
+                                </md-card-header>
+                                <md-card-content>
+                                    <div class="md-layout-item md-small-size-100 md-size-100">
+                                      
+                                            <md-field>
+                                                <md-input v-model="mail.address" type="text"></md-input>
+                                            </md-field>
+                                        </div>
+                                      <div class="md-layout-item md-small-size-100 md-size-100">
+                                            <div class="places-buttons text-center">
+                                                <md-button
+                                                    class="md-info"
+                                                    @click="clickSendModifyEmail(mail)"
+                                                    >이메일 수정</md-button >
+                                            </div>
+                                        </div>
+                                </md-card-content>
+                            </md-card>
+                        </md-dialog>
                       </div>
-                    <div class="md-layout-item md-size-100 text-center">
-                      <md-button class="md-raised md-info">알림신청</md-button>
-                    </div>
                   </div>
                 </md-card-content>
               </md-card>
@@ -76,6 +102,12 @@ export default {
       addMail:null,
       addUrlId:null,
       addUserId:null,
+      showModifyEmailDialog:false,
+      mail:{
+        id:'',
+        address:'',
+      }
+
     }
   },
   mounted(){
@@ -83,25 +115,31 @@ export default {
   },
   computed:{
     ...mapGetters('url', {urlList:'getUrlList', mailGroups:'getUrlMails'}),
-    ...mapGetters('user', {userId:'getUserId'}),
+    ...mapGetters('user', {userId:'getUserId', id:'getUserUniqueId'}),
   },
   methods:{
-    ...mapActions('url', ["requestUrlList", "requestRegisterMail","requestGetMailGroup"]),
+    ...mapActions('url', ["requestUrlList", "requestRegisterMail","requestGetMailGroup", "requestModifyEmail"]),
     onChange(event){
-      console.log(event);
-      this.$store.state.mailGroup=null;
+      this.$store.state.mailGroup='';
       this.addUrlId=event;
-      console.log(this.addUrlId)
       this.requestGetMailGroup(event);
     },
     clickAddEmail(){
       let body={
         emailGroup:this.addMail,
         urlId: this.addUrlId,
-        userId:this.userId
+        userId:this.id
       }
-      console.log(body)
       this.requestRegisterMail(body);
+    },
+    clickModifyEmail : function(item){
+      this.showModifyEmailDialog = true;
+      this.mail.address = item.emailGroup;
+      this.mail.id = item.id;
+      this.mail.urlId = item.urlId;
+    },
+    clickSendModifyEmail : function(item){
+      this.requestModifyEmail(item);
     }
 
   },
@@ -112,3 +150,13 @@ export default {
 
 };
 </script>
+<style scoped>
+.wraningChip {
+        background-color: rgb(224, 206, 41) !important;
+        color: white !important;
+    }
+    .dangerChip {
+        background-color: rgb(233, 93, 93) !important;
+        color: white !important;
+    }
+</style>

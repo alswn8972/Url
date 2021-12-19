@@ -9,17 +9,51 @@
                 <md-table-cell md-label="설명">{{ item.urlContent }}</md-table-cell>
                 <md-table-cell md-label="주소">{{ item.urlAddress }}</md-table-cell>
                 <md-table-cell md-label="상태">
-                    <md-chip v-if="item.urlStatusCode <200">error</md-chip>
-                    <md-chip v-else-if="item.urlStatusCode >= 200 && item.urlStatusCode < 300" class="successChip">{{ item.urlStatusCode }}</md-chip>
-                    <md-badge v-else-if="item.urlStatusCode >= 300 && item.urlStatusCode < 400 && item.urlIsPending==1" md-content="!">
-                        <md-chip class="wraningChip">{{ item.urlStatusCode }}</md-chip>
+                    <md-chip v-if="item.urlStatusCode <200">error 
+                        <md-tooltip md-direction="top">error</md-tooltip> 
+                    </md-chip>
+                    
+                    <md-chip v-else-if="item.urlStatusCode >= 200 && item.urlStatusCode < 300" class="successChip">{{ item.urlStatusCode }}
+                        <md-tooltip v-if="item.urlStatusCode == 200" md-direction="top">OK</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 201" md-direction="top">Created</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 202" md-direction="top">Accepted</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 203" md-direction="top">Non-Authoritative Information</md-tooltip>
+                    </md-chip>
+                    
+                    
+                    <md-badge  class="md-position-left" v-else-if="item.urlStatusCode >= 300 && item.urlStatusCode < 400 && item.urlIsPending==1" md-content="!">
+                        <md-chip class="wraningChip">{{ item.urlStatusCode }}
+                            <md-tooltip v-if="item.urlStatusCode == 300" md-direction="top">Multiple Choice</md-tooltip>
+                            <md-tooltip v-if="item.urlStatusCode == 301" md-direction="top">Moved Permanently</md-tooltip>
+                            <md-tooltip v-if="item.urlStatusCode == 302" md-direction="top">Found</md-tooltip>
+                            <md-tooltip v-if="item.urlStatusCode == 308" md-direction="top">Permanent Redirect</md-tooltip>
+                        </md-chip>
                     </md-badge>
-                    <md-chip v-else-if="item.urlStatusCode >= 300 && item.urlStatusCode < 400 && item.urlIsPending==0" class="wraningChip">{{ item.urlStatusCode }}</md-chip>
-                    <md-badge v-else-if="item.urlStatusCode >= 400 && item.urlStatusCode < 500 && item.urlIsPending==1" md-content="!">
-                        <md-chip class="wraningChip">{{ item.urlStatusCode }}</md-chip>
+                    
+                    <md-chip v-else-if="item.urlStatusCode >= 300 && item.urlStatusCode < 400 && item.urlIsPending==0" class="wraningChip">{{ item.urlStatusCode }}
+                        <md-tooltip v-if="item.urlStatusCode == 300" md-direction="top">Multiple Choice</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 301" md-direction="top">Moved Permanently</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 302" md-direction="top">Found</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 308" md-direction="top">Permanent Redirect</md-tooltip>
+                    </md-chip>
+                    <md-badge class="md-position-left" v-else-if="item.urlStatusCode >= 400 && item.urlStatusCode < 500 && item.urlIsPending==1" md-content="!">
+                        <md-chip class="dangerChip">{{ item.urlStatusCode }}</md-chip>
+                        <md-tooltip v-if="item.urlStatusCode == 400" md-direction="top">Bad Request</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 401" md-direction="top">Unauthorized</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 402" md-direction="top">Payment Required</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 403" md-direction="top">Forbidden</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 404" md-direction="top">Not Found</md-tooltip>
                     </md-badge>
-                    <md-chip v-else-if="item.urlStatusCode >= 400 && item.urlStatusCode < 500 && item.urlIsPending==0" class="dangerChip">{{ item.urlStatusCode }}</md-chip>
+
+                    <md-chip v-else-if="item.urlStatusCode >= 400 && item.urlStatusCode < 500 && item.urlIsPending==0" class="dangerChip">{{ item.urlStatusCode }} 
+                        <md-tooltip v-if="item.urlStatusCode == 400" md-direction="top">Bad Request</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 401" md-direction="top">Unauthorized</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 402" md-direction="top">Payment Required</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 403" md-direction="top">Forbidden</md-tooltip>
+                        <md-tooltip v-if="item.urlStatusCode == 404" md-direction="top">Not Found</md-tooltip>
+                    </md-chip>
                 </md-table-cell>
+
 
                 <md-table-cell md-label="검사시간">
                     {{item.urlCheckTime}}
@@ -28,14 +62,14 @@
                     <md-chip class="wraningChip"  @click="requestModifyDialog(item)">
                         수정
                     </md-chip>
-                    <md-chip class="dangerChip">
+                    <md-chip class="dangerChip" @click="requestDelete(item)">
                         삭제
                     </md-chip>
                 </md-table-cell>
             </md-table-row>
         </md-table>
         <md-dialog :md-active.sync="showModifyDialog">
-          <md-card>
+            <md-card>
                 <md-card-header class="addCard">
                     Url 수정
                 </md-card-header>
@@ -78,7 +112,7 @@
                         </div>
                         <div class="md-layout-item md-small-size-100 md-size-100 text-center">
                             <md-button
-                              :disabled="!modifyAvaliable"
+                                :disabled="!modifyAvaliable"
                                 @click="clickModifyUrl"
                                 class="md-raised md-info">수정</md-button>
                         </div>
@@ -149,53 +183,41 @@
                 this.$emit('history', item)
             },
             clickCheck: function(item){
-                console.log("chip누름")
                 this.requestChangePending(item.id)
             },
             requestModifyDialog: function(item){
                 this.showModifyDialog = true;
-                console.log("modify :" , item)
-
                 var curItem = item;
                 var checkProtocol  = 0;
 
                 checkProtocol = curItem.urlAddress.indexOf('http://')
                 console.log(checkProtocol)
-                if(checkProtocol== 0)
-                {
+                if(checkProtocol== 0){
                     this.url.protocol =1;
                     this.url.address = curItem.urlAddress.substr(7,curItem.urlAddress.length);
                 }
-                else
-                {
+                else{
                     this.url.protocol =2;
                     this.url.address = curItem.urlAddress.substr(8,curItem.urlAddress.length);
                 }
                 this.url.urlName= curItem.urlName;
                 this.url.urlContent = curItem.urlContent;
                 this.url.urlId= curItem.urlId;
-                console.log("geturl:",this.url)
             },
-            requestDeleteUrl: function(item)
-            {
+            requestDelete: function(item){
                 var delurl ={
-                     id: item.urlId,
-                     userId: this.id,
-                } // alswn8972 가 아니라 고유 id가 필요함 
-            
-            this.requestDeleteUrl(delurl)
-
-                this
-                    .$router
-                    .go();
+                    id: item.urlId,
+                } 
+                this.requestDeleteUrl(delurl)
             },
+
             clickModifyUrl() {
                 if (this.url.protocol == 2) {
                     var body = {
                         urlAddress: "https://" + this.url.address,
                         urlName: this.url.urlName,
                         urlContent: this.url.urlContent,
-                       id : this.url.urlId,
+                        id : this.url.urlId,
                     }
                     this.requestPactchUrl(body);
                 } else {
@@ -207,40 +229,13 @@
                     }
                     this.requestPactchUrl(body2);
                 }
+                this.$store.state.urlHistory = null;
                  this
                     .$router
                     .go();
             },
 
-            clickAddUrl() {
-                if (this.url.protocol == 2) {
-                    var body = {
-                        urlAddress: "https://" + this.url.address,
-                        urlName: this.url.urlName,
-                        urlContent: this.url.urlContent,
-                        userId: this.userId
-                    }
-                this.requestAddUrl(body);
-                } else {
-                    var body2 = {
-                        urlAddress: "http://" + this.url.address,
-                        urlName: this.url.urlName,
-                        urlContent: this.url.urlContent,
-                        userId: this.userId
-                    }
-
-                    this.requestAddUrl(body2);
-                 
-                }
-                this.url.protocol = '';
-                this.url.address = '';
-                this.url.urlName = '';
-                this.urlContent = '';
-                this.showDialog = false;
-                this
-                    .$router
-                    .go();
-            },
+            
             clickCheckStatus() {
                 if (this.url.address == "") {
                     this.isEmpty = true;
@@ -249,11 +244,10 @@
                     this.isProtocol = true;
                 }
                 if (this.url.address != null && this.url.protocol != null) {
-                    this.requestAddtoCheckUrl(this.url);
+                    this.requestModitoCheckUrl(this.url);
                     
                 }
             },
-
             clickClose() {
                 this.isEmpty = false;
             },
@@ -264,7 +258,6 @@
         },
         created() {
             this.requestUrlList(this.userId);
-            setInterval(() => this.requestUrlList(this.userId), 60000);
         },
         mounted(){
 
@@ -283,5 +276,8 @@
     .dangerChip {
         background-color: rgb(233, 93, 93) !important;
         color: white !important;
+    }
+    .addCard {
+        margin-top: 0.3% !important;
     }
 </style>

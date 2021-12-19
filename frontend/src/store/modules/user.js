@@ -2,17 +2,24 @@ import jwt_decode from 'jwt-decode';
 import http from '@/utils/http';
 import router from "@/routes/routes";
 import VueSimpleAlert from "vue-simple-alert";
-export default {
-  namespaced: true,
-  state: {
+function reset(){ 
+  return {
     userInfo: null,
     userName: "",
     userId:"",
     accessToken: null,
-    id:null,
+    idNumber:null,
     userIdAvailable:false,
-    userEmailAvailable:false,
-  },
+    userEmailAvailable: false,
+    userModifyEmail: false,
+    userEmail : null,
+  }
+}
+export default {
+
+  namespaced: true,
+  
+  state: reset(),
   getters: {
     getAccessToken(state) {
       return state.accessToken;
@@ -21,8 +28,16 @@ export default {
       return state.loginStatus;
     },
     getUserInfo(state) {
+      var info = {
+        userName : state.userName,
+        userId : state.userId,
+        userEmail : state.userEmail,
+        idNumber :state.idNumber
+      }
+      state.userInfo = info; 
       return state.userInfo;
     },
+
     getUserName(state) {
       return state.userName;
     },
@@ -36,23 +51,27 @@ export default {
       return state.userIdAvailable
     },
     getUserUniqueId(state) {
-      return state.id;
+      return state.idNumber;
+    },
+    getModifyEmail(state) {
+      return state.userModifyEmail;
     }
   },
   mutations: {
     LOGIN(state, payload) {
       const decode = jwt_decode(payload.accessToken);
       const info = decode.userInfo;
-      console.log(info);
       state.accessToken = payload.accessToken;
       state.userId = info.id;
       state.userName = info.name;
-      state.id = info.isNumber;
+      state.idNumber = info.idNumber;
+      state.userEmail = info.userEmail;
       localStorage.setItem("accessToken", state.accessToken);
     },
     LOGOUT(state) {
       state.accessToken = null;
       localStorage.clear();
+      Object.assign(state, reset())
     },
     USERINFO(state, payload) {
       state.userInfo = payload;
@@ -62,14 +81,21 @@ export default {
     },
     USEREMAILAVAIL(state, payload){
       state.userEmailAvailable = payload;
+    },
+    USERSEREMAIL(state , payload){
+      state.userEmail = payload;
+    },
+    MODIFYEMAIL(state, payload)
+    {
+      state.userModifyEmail = payload;
     }
 
   },
   actions: {
-    requestLogout({commit}) {
+    requestLogout({ commit }) {
       commit("LOGOUT");
     },
-    requestRegister(context, payload) {
+    requestRegister({ commit }, payload) {
       let body = payload
       http.post('/api/join', body).then(() => {
         VueSimpleAlert.fire({
@@ -88,7 +114,6 @@ export default {
       http
         .post(`/api/auth/login`, user)
         .then(({ data }) => {
-          console.log(data);
           commit("LOGIN", data);
           VueSimpleAlert.fire({
             title: "로그인 성공",
@@ -119,7 +144,7 @@ export default {
     requestUserInfo({ commit }) {
       const CSRF_TOKEN = localStorage.getItem("accessToken");
       http
-        .get(`/api/v1/users/me`, {
+        .get(`/api/users/me`, {
           headers: { "Authorization": 'Bearer ' + CSRF_TOKEN }
         })
         .then(({ data }) => {
@@ -130,26 +155,9 @@ export default {
 
         });
     },
-    requestModify({ commit }, user) {
-
-      http
-        .patch(`/api/v1/users/` + user.userId, user)
-        .then(({ data }) => {
-          commit("USERINFO", data);
-          VueSimpleAlert.fire({
-            title: "수정 성공",
-            text: "내용이 성공적으로 반영되었습니다.✍️",
-            type: "success",
-          })
-          window.location.reload();
-        })
-        .catch(() => {
-
-        });
-    },
     requestDuplicate({ commit }, userId) {
       http
-        .get(`/api/users/`+userId)
+        .get(`/api/users/` + userId)
         .then((res) => {
           commit("USERIDAVAIL", true);
           VueSimpleAlert.fire({
@@ -169,43 +177,78 @@ export default {
           }
         });
     },
-    requestCode(context, email) {
-      http.post('/api/email/code', email).
-      then(({ data }) => {
-        VueSimpleAlert.fire({
-          title: "인증코드 전송 성공",
-          text: "메일을 확인해주세요.🙌",
-          type: "success",
-        })
-      }).catch((err) => {
-        VueSimpleAlert.fire({
-          title: "인증코드 전송 실패",
-          text: "인증을 다시 시도해주세요.😱",
-          type: "error",
-        })
-      });
+    requestCode({ commit }, email) {
+      http.get('/api/mail/code/' + email).
+        then(({ data }) => {
+          VueSimpleAlert.fire({
+            title: "인증코드 전송 성공",
+            text: "메일을 확인해주세요.🙌",
+            type: "success",
+          })
+        }).catch((err) => {
+          VueSimpleAlert.fire({
+            title: "인증코드 전송 실패",
+            text: "인증을 다시 시도해주세요.😱",
+            type: "error",
+          })
+        });
     },
-    requestCheckCode(context, payload) {
-      console.log(payload)
-      http.post('/api/email/check', payload).
-      then(({ data }) => {
-        console.log(data)
-        if(data.statusCode == 201)
-        commit("USEREMAILAVAIL", true);
-        VueSimpleAlert.fire({
-          title: "인증 성공",
-          text: "인증코드가 일치합니다.🙌",
-          type: "success",
-        })
-      }).catch((err) => {
-        commit("USEREMAILAVAIL", false);
-        VueSimpleAlert.fire({
-          title: "인증 실패",
-          text: "인증코드를 다시 입력해주세요.😱",
-          type: "error",
-        })
-      });
+    requestCheckCode({ commit }, payload) {
+      http.post('/api/mail/check', payload).
+        then(({ data }) => {
+          if (data.statusCode == 201)
+            commit("USEREMAILAVAIL", true);
+          VueSimpleAlert.fire({
+            title: "인증 성공",
+            text: "인증코드가 일치합니다.🙌",
+            type: "success",
+          })
+        }).catch((err) => {
+          commit("USEREMAILAVAIL", false);
+          VueSimpleAlert.fire({
+            title: "인증 실패",
+            text: "인증코드를 다시 입력해주세요.😱",
+            type: "error",
+          })
+        });
     },
+    requsetModifyCheckCode({ commit }, payload) {
+      http.post('/api/mail/check', payload).
+        then(({ data }) => {
+          if (data.statusCode == 201)
+            commit("MODIFYEMAIL", true);
+          VueSimpleAlert.fire({
+            title: "인증 성공",
+            text: "인증코드가 일치합니다.🙌",
+            type: "success",
+          })
+        }).catch((err) => {
+          commit("MODIFYEMAIL", false);
+          VueSimpleAlert.fire({
+            title: "인증 실패",
+            text: "인증코드를 다시 입력해주세요.😱",
+            type: "error",
+          })
+        });
+    },
+    requestModify({ commit }, user) {
+      http
+        .patch(`/api/user/patch` , user)
+        .then(({ data }) => {
+          commit("USERSEREMAIL", user.userEmail);
+          commit("MODIFYEMAIL", false);
+          VueSimpleAlert.fire({
+            title: "수정 성공",
+            text: "내용이 성공적으로 반영되었습니다.✍️",
+            type: "success",
+          })
+          setTimeout(location.reload(),2000);
+        })
+        .catch(() => {
+
+        });
+    },
+
   },
 
 }

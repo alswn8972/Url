@@ -5,29 +5,42 @@
 
     <side-bar>
       <mobile-menu slot="content"></mobile-menu>
-      <sidebar-link to="/">
-        <md-icon>check_circle</md-icon>
-        <p>Checker</p>
-      </sidebar-link>
-      <sidebar-link to="/my/url">
+      <div>
+        <sidebar-link to="/">
+          <md-icon>check_circle</md-icon>
+          <p>Checker</p>
+        </sidebar-link>
+      </div>
+      <div @click="resetHistory()">
+      <sidebar-link to="/my/url" >
         <md-icon>list</md-icon>
-        <p>Site list</p>
+        <p >Site list</p>
       </sidebar-link>
+      </div>
+    <div>
       <sidebar-link to="/status">
         <md-icon>code</md-icon>
         <p>Status Code</p>
       </sidebar-link>
+    </div>
+
+      <div @click="resetEmail()"> 
       <sidebar-link to="/reservation">
         <md-icon>notifications</md-icon>
         <p>Reservation</p>
       </sidebar-link>
+      </div>
 
+      <div v-if="isLogin" @click="reset()"> 
+      <sidebar-link to="/profile">
+        <md-icon>face</md-icon>
+        <p>Profile</p>
+      </sidebar-link>
+      </div>
     </side-bar>
 
     <div class="main-panel">
       <top-navbar></top-navbar>
-
-
         <transition name="fade" mode="out-in">
           <router-view></router-view>
         </transition>
@@ -40,13 +53,12 @@
 <script>
 import TopNavbar from "./Layout/TopNavbar.vue";
 import ContentFooter from "./Layout/ContentFooter.vue";
-//import DashboardContent from "./Layout/Content.vue";
 import MobileMenu from "@/pages/Layout/MobileMenu.vue";
-
+import {mapGetters, mapActions} from 'vuex';
 export default {
+  
   components: {
     TopNavbar,
-    //DashboardContent,
     ContentFooter,
     MobileMenu,
   },
@@ -54,6 +66,24 @@ export default {
     return {
       sidebarBackground: "green",
     };
+  },
+  methods : {
+    ...mapActions('url',['requestResetHistory','requestResetEmail']),
+    resetHistory(){
+      this.requestResetHistory();
+    },
+   
+     resetEmail(){
+       this.requestResetEmail();
+     },
+     reset(){
+       this.requestResetHistory();
+       this.requestResetEmail();
+     }
+    
+  },
+    computed:{
+    ...mapGetters('user', {isLogin:'getAccessToken'})
   },
 };
 </script>
